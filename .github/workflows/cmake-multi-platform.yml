@@ -1,49 +1,36 @@
-name: CMake on multiple platforms
+name: Build and Test
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-
     strategy:
-      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        build_type: [Release]
-        compiler: [gcc, clang, cl]
-        include:
-          - os: windows-latest
-            compiler: cl
-          - os: ubuntu-latest
-            compiler: g++
-          - os: ubuntu-latest
-            compiler: clang
-        exclude:
-          - os: windows-latest
-            compiler: gcc
-          - os: windows-latest
-            compiler: clang
-          - os: ubuntu-latest
-            compiler: cl
+        compiler: [g++, cl]
+        build_type: [Debug, Release]
 
     steps:
-    - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Set up CMake
-      run: |
-        sudo apt-get install -y cmake g++
-    - name: Configure CMake
-      run: >
-        cmake -B build
-        -DCMAKE_CXX_COMPILER=$CXX_COMPILER
+      - name: Set up CMake
+        uses: martinlindhe/cmake-action@v2
+        with:
+          cmake-version: '3.21'
 
-    - name: Build
-      run: cmake --build build --config ${{ matrix.build_type }}
+      - name: Run CMake configure
+        run: cmake -B build -S . -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
 
-    - name: Test
-      run: ctest --build-config ${{ matrix.build_type }}
+      - name: Build with make
+        run: cmake --build build --config ${{ matrix.build_type }}
+
+      - name: Run tests
+        run: ctest -C ${{ matrix.build_type }} -VV
