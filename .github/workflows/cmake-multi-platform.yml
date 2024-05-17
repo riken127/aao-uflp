@@ -20,7 +20,7 @@ jobs:
           - os: windows-latest
             compiler: cl
           - os: ubuntu-latest
-            compiler: gcc
+            compiler: g++
           - os: ubuntu-latest
             compiler: clang
         exclude:
@@ -36,15 +36,11 @@ jobs:
 
     - name: Set up CMake
       run: |
-        sudo apt-get install -y cmake
-        cmake --version
-
+        sudo apt-get install -y cmake g++
     - name: Configure CMake
       run: >
         cmake -B build
-        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -DCMAKE_CXX_COMPILER=$CXX_COMPILER
-        -DCMAKE_C_COMPILER=$C_COMPILER
 
     - name: Build
       run: cmake --build build --config ${{ matrix.build_type }}
