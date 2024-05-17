@@ -1,0 +1,54 @@
+name: CMake on multiple platforms
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        build_type: [Release]
+        compiler: [gcc, clang, cl]
+        include:
+          - os: windows-latest
+            compiler: cl
+          - os: ubuntu-latest
+            compiler: gcc
+          - os: ubuntu-latest
+            compiler: clang
+        exclude:
+          - os: windows-latest
+            compiler: gcc
+          - os: windows-latest
+            compiler: clang
+          - os: ubuntu-latest
+            compiler: cl
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up CMake
+      run: |
+        sudo apt-get install -y cmake
+        cmake --version
+
+    - name: Configure CMake
+      run: >
+        cmake -B build
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DCMAKE_CXX_COMPILER=$CXX_COMPILER
+        -DCMAKE_C_COMPILER=$C_COMPILER
+        -S ${{ github.workspace }}/src
+
+    - name: Build
+      run: cmake --build build --config ${{ matrix.build_type }}
+
+    - name: Test
+      run: ctest --build-config ${{ matrix.build_type }}
