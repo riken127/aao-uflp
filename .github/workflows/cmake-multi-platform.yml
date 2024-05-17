@@ -45,7 +45,7 @@ jobs:
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -DCMAKE_CXX_COMPILER=$CXX_COMPILER
         -DCMAKE_C_COMPILER=$C_COMPILER
-        -S ${{ github.workspace }}/src
+        -S ${{ github.workspace }}
 
     - name: Build
       run: cmake --build build --config ${{ matrix.build_type }}
