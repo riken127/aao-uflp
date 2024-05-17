@@ -1,0 +1,150 @@
+﻿{
+  "configurations": [
+    {
+      "name": "x64-Debug-MSVC",
+      "generator": "Ninja",
+      "configurationType": "Debug",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "buildRoot": "${projectDir}\\out\\build\\x64-Debug-MSVC",
+      "installRoot": "${projectDir}\\out\\install\\x64-Debug-MSVC",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "-VV",
+      "variables": [
+        {
+          "name": "CMAKE_CXX_STANDARD",
+          "value": "17"
+        },
+        {
+          "name": "CMAKE_EXPORT_COMPILE_COMMANDS",
+          "value": "YES"
+        }
+      ]
+    },
+    {
+      "name": "x64-Release-MSVC",
+      "generator": "Ninja",
+      "configurationType": "Release",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "buildRoot": "${projectDir}\\out\\build\\x64-Release-MSVC",
+      "installRoot": "${projectDir}\\out\\install\\x64-Release-MSVC",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "-VV",
+      "variables": [
+        {
+          "name": "CMAKE_CXX_STANDARD",
+          "value": "17"
+        },
+        {
+          "name": "CMAKE_EXPORT_COMPILE_COMMANDS",
+          "value": "YES"
+        }
+      ]
+    },
+    {
+      "name": "x64-Debug-GCC",
+      "generator": "Ninja",
+      "configurationType": "Debug",
+      "buildRoot": "${projectDir}/out/build/x64-Debug-GCC",
+      "installRoot": "${projectDir}/out/install/x64-Debug-GCC",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "-VV",
+      "variables": [
+        {
+          "name": "CMAKE_CXX_COMPILER",
+          "value": "g++"
+        },
+        {
+          "name": "CMAKE_CXX_STANDARD",
+          "value": "17"
+        },
+        {
+          "name": "CMAKE_EXPORT_COMPILE_COMMANDS",
+          "value": "YES"
+        }
+      ]
+    },
+    {
+      "name": "x64-Release-GCC",
+      "generator": "Ninja",
+      "configurationType": "Release",
+      "buildRoot": "${projectDir}/out/build/x64-Release-GCC",
+      "installRoot": "${projectDir}/out/install/x64-Release-GCC",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "-VV",
+      "variables": [
+        {
+          "name": "CMAKE_CXX_COMPILER",
+          "value": "g++"
+        },
+        {
+          "name": "CMAKE_CXX_STANDARD",
+          "value": "17"
+        },
+        {
+          "name": "CMAKE_EXPORT_COMPILE_COMMANDS",
+          "value": "YES"
+        }
+      ]
+    },
+    {
+      "name": "x64-Debug-Clang",
+      "generator": "Ninja",
+      "configurationType": "Debug",
+      "buildRoot": "${projectDir}/out/build/x64-Debug-Clang",
+      "installRoot": "${projectDir}/out/install/x64-Debug-Clang",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "-VV",
+      "variables": [
+        {
+          "name": "CMAKE_CXX_COMPILER",
+          "value": "clang++"
+        },
+        {
+          "name": "CMAKE_CXX_STANDARD",
+          "value": "17"
+        },
+        {
+          "name": "CMAKE_EXPORT_COMPILE_COMMANDS",
+          "value": "YES"
+        }
+      ]
+    },
+    {
+      "name": "x64-Release-Clang",
+      "generator": "Ninja",
+      "configurationType": "Release",
+      "buildRoot": "${projectDir}/out/build/x64-Release-Clang",
+      "installRoot": "${projectDir}/out/install/x64-Release-Clang",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "-VV",
+      "variables": [
+        {
+          "name": "CMAKE_CXX_COMPILER",
+          "value": "clang++"
+        },
+        {
+          "name": "CMAKE_CXX_STANDARD",
+          "value": "17"
+        },
+        {
+          "name": "CMAKE_EXPORT_COMPILE_COMMANDS",
+          "value": "YES"
+        }
+      ]
+    }
+  ],
+  "folders": [
+    {
+      "path": "src/algorithms"
+    },
+    {
+      "path": "src/tests"
+    }
+  ]
+}

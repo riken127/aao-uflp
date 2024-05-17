@@ -1,0 +1,8 @@
+[
+{
+  "directory": "C:/Users/henri/source/repos/aao-utflp/out/build/x64-Debug-Clang",
+  "command": "C:\\PROGRA~1\\LLVM\\bin\\CLANG_~1.EXE -O0 -g -Xclang -gcodeview -D_DEBUG -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd -std=gnu++17 -o CMakeFiles\\does_it_run.dir\\src\\tests\\does_it_run.obj -c C:\\Users\\henri\\source\\repos\\aao-utflp\\src\\tests\\does_it_run.cpp",
+  "file": "C:\\Users\\henri\\source\\repos\\aao-utflp\\src\\tests\\does_it_run.cpp",
+  "output": "CMakeFiles\\does_it_run.dir\\src\\tests\\does_it_run.obj"
+}
+]

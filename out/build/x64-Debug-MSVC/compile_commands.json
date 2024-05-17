@@ -1,0 +1,8 @@
+[
+{
+  "directory": "C:/Users/henri/source/repos/aao-utflp/out/build/x64-Debug-MSVC",
+  "command": "C:\\PROGRA~1\\MICROS~3\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1439~1.335\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++17 /FoCMakeFiles\\does_it_run.dir\\src\\tests\\does_it_run.obj /FdTARGET_COMPILE_PDB /FS -c C:\\Users\\henri\\source\\repos\\aao-utflp\\src\\tests\\does_it_run.cpp",
+  "file": "C:\\Users\\henri\\source\\repos\\aao-utflp\\src\\tests\\does_it_run.cpp",
+  "output": "CMakeFiles\\does_it_run.dir\\src\\tests\\does_it_run.obj"
+}
+]

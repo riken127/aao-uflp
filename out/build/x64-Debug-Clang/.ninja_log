@@ -1,0 +1,7 @@
+# ninja log v5
+2	1844	7376874183499626	CMakeFiles/does_it_run.dir/src/tests/does_it_run.obj	ffc83830fd6dc99e
+1848	2085	7376874185507839	does_it_run.exe	e95605ab08701414
+19	770	7376875130165771	CMakeFiles/does_it_run.dir/src/tests/does_it_run.obj	ffc83830fd6dc99e
+771	949	7376875131772672	does_it_run.exe	e95605ab08701414
+15	424	7376875362961449	CMakeFiles/does_it_run.dir/src/tests/does_it_run.obj	ffc83830fd6dc99e
+424	563	7376875364217544	does_it_run.exe	e95605ab08701414
