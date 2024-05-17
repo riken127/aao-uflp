@@ -8,15 +8,17 @@ project(Algorithms)
 # add_library(algorithms cool_algorithm.cpp super_fun_algorithm.cpp)
 
 # Add executable targets for your tests
-add_executable(does_it_run src/tests/does_it_run.cpp)
+add_executable(does_it_run_test src/tests/does_it_run_test.cpp)
 # Add more test executables as needed
 
 # Link your algorithms library to the test executables
 # target_link_libraries(test_algorithm1 PRIVATE algorithms)
 # Link more test executables as needed
 
+enable_testing()
 # Register tests with CTest
-add_test(NAME DoesItRun COMMAND does_it_run)
+add_test(NAME DoesItRun 
+         COMMAND does_it_run_test)
 #add_test(NAME TestAlgorithm2 COMMAND test_algorithm2)
 # Add more tests as needed
 
@@ -69,6 +71,6 @@ if(EXISTS "${CMAKE_BINARY_DIR}/CMakeSettings.json")
         file(MAKE_DIRECTORY ${INSTALL_CONFIG_DIR})
 
         # Set build root and install root for each configuration
-        set_property(TARGET does_it_run PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
+        set_property(TARGET does_it_run_test PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
     endforeach()
 endif()
