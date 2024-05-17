@@ -21,10 +21,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up CMake
-        uses: martinlindhe/cmake-action@v2
-        with:
-          cmake-version: '3.21'
+      - name: Install CMake
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y cmake
 
       - name: Run CMake configure
         run: cmake -B build -S . -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
