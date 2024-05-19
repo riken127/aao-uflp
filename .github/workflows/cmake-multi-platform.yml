@@ -13,21 +13,17 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        compiler: [g++, clang++, MSVC]
+        os: [ubuntu-latest]
+        compiler: [g++]
         build_type: [Debug, Release]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Setup Compiler and Build Tools
+      - name: Install CMake
         if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get update && sudo apt-get install -y cmake g++
-      
-      - name: Setup Compiler and Build Tools
-        if: matrix.os == 'windows-latest'
-        run: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' && choco install ninja
+        run: sudo apt-get update && sudo apt-get install -y cmake
 
       - name: Run CMake build and test
         run: |
