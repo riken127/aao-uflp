@@ -2,7 +2,7 @@
 #include "../problem/Problem.hpp"
 
 /**
- * @brief Namespace for the algorithm classes 
+ * @brief Namespace for the algorithm classes
  */
 namespace algorithm {
 	/**
