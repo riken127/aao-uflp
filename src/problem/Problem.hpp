@@ -8,7 +8,6 @@
  * A problem instance consists of a number of customers and a number of warehouses.
  * It also contains a list of warehouses and a list of customers.
  */
-**/
 class Problem {
 private:
 	int num_customers;

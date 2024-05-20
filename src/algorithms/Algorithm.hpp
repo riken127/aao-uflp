@@ -1,5 +1,5 @@
 #pragma once
-#include "Problem.h"
+#include "../problem/Problem.hpp"
 
 /**
  * @brief Namespace for the algorithm classes 

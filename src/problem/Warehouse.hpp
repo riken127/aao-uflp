@@ -8,10 +8,8 @@ private:
     int fixed_cost;
 
 public:
-    // Constructor
     Warehouse(int cap, int cost) : capacity(cap), fixed_cost(cost) {}
 
-    // Getters
     int getCapacity() const {
         return capacity;
     }
