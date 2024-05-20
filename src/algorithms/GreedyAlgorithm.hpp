@@ -6,6 +6,6 @@
 namespace algorithm {
 	class GreedyAlgorithm : public algorithm::Algorithm {
 	public: 
-		void solve(const Problem& problem) const override;
+		std::vector<std::pair<int, int>> solve(const Problem& problem) const override;
 	};
 }

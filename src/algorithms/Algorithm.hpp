@@ -10,7 +10,7 @@ namespace algorithm {
 	 */
 	class Algorithm {
 	public:
-		virtual void solve(const Problem& problem) const = 0;
+		virtual std::vector<std::pair<int, int>> solve(const Problem& problem) const = 0;
 		virtual ~Algorithm() {}
 	};
 }
