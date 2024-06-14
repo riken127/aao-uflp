@@ -1,0 +1,7 @@
+# ninja log v5
+0	661	1718354238473979535	CMakeFiles/does_it_run_test.dir/src/tests/does_it_run_test.cpp.o	a9254f2655459211
+1	538	1718354267833976390	does_it_run_test	356a20ebb7a055a4
+2	1223	1718354268513976231	CMakeFiles/aco_algorithm_test_1.dir/src/tests/aco_algorithm/aco_algorithm_test_1.cpp.o	f4b9b3d45bada0c4
+0	457	1718354485623929354	CMakeFiles/algorithms.dir/src/algorithms/Aco.cpp.o	253c0aff70de35c1
+458	475	1718354485643929350	libalgorithms.a	64c394858a07a145
+475	639	1718354485813929328	aco_algorithm_test_1	e0d9f88cbb6c4c50

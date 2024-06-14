@@ -1,0 +1,17 @@
+[
+{
+  "directory": "/home/lucas/aao-uflp/build",
+  "command": "/usr/bin/c++ -g -o CMakeFiles/algorithms.dir/src/algorithms/Aco.cpp.o -c /home/lucas/aao-uflp/src/algorithms/Aco.cpp",
+  "file": "/home/lucas/aao-uflp/src/algorithms/Aco.cpp"
+},
+{
+  "directory": "/home/lucas/aao-uflp/build",
+  "command": "/usr/bin/c++ -g -o CMakeFiles/does_it_run_test.dir/src/tests/does_it_run_test.cpp.o -c /home/lucas/aao-uflp/src/tests/does_it_run_test.cpp",
+  "file": "/home/lucas/aao-uflp/src/tests/does_it_run_test.cpp"
+},
+{
+  "directory": "/home/lucas/aao-uflp/build",
+  "command": "/usr/bin/c++ -g -o CMakeFiles/aco_algorithm_test_1.dir/src/tests/aco_algorithm/aco_algorithm_test_1.cpp.o -c /home/lucas/aao-uflp/src/tests/aco_algorithm/aco_algorithm_test_1.cpp",
+  "file": "/home/lucas/aao-uflp/src/tests/aco_algorithm/aco_algorithm_test_1.cpp"
+}
+]

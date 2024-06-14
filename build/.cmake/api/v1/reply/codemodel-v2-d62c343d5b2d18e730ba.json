@@ -1,0 +1,78 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.0"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "Algorithms",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "aco_algorithm_test_1::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-aco_algorithm_test_1-Debug-0792a4d39c1ae82870db.json",
+					"name" : "aco_algorithm_test_1",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "algorithms::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-algorithms-Debug-b4393d83aafdf28303fa.json",
+					"name" : "algorithms",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "does_it_run_test::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-does_it_run_test-Debug-16f36e34f5e41cb3972a.json",
+					"name" : "does_it_run_test",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/lucas/aao-uflp/build",
+		"source" : "/home/lucas/aao-uflp"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

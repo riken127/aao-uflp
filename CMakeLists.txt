@@ -6,19 +6,26 @@ project(Algorithms)
 
 # Add your algorithms library
 # add_library(algorithms cool_algorithm.cpp super_fun_algorithm.cpp)
-
+add_library(algorithms src/algorithms/Algorithm.hpp
+    src/algorithms/Aco.cpp
+    src/algorithms/Aco.hpp
+)
 # Add executable targets for your tests
 add_executable(does_it_run_test src/tests/does_it_run_test.cpp)
+add_executable(aco_algorithm_test_1 src/tests/aco_algorithm/aco_algorithm_test_1.cpp)
 # Add more test executables as needed
 
 # Link your algorithms library to the test executables
 # target_link_libraries(test_algorithm1 PRIVATE algorithms)
+target_link_libraries(aco_algorithm_test_1 PRIVATE algorithms)
 # Link more test executables as needed
 
 enable_testing()
 # Register tests with CTest
 add_test(NAME DoesItRun 
          COMMAND does_it_run_test)
+add_test(Name AcoAlgorithmTest1
+         COMMAND aco_algorithm_test_1)
 #add_test(NAME TestAlgorithm2 COMMAND test_algorithm2)
 # Add more tests as needed
 

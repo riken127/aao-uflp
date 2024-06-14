@@ -1,0 +1,6 @@
+/home/lucas/aao-uflp/build/CMakeFiles/algorithms.dir
+/home/lucas/aao-uflp/build/CMakeFiles/does_it_run_test.dir
+/home/lucas/aao-uflp/build/CMakeFiles/aco_algorithm_test_1.dir
+/home/lucas/aao-uflp/build/CMakeFiles/test.dir
+/home/lucas/aao-uflp/build/CMakeFiles/edit_cache.dir
+/home/lucas/aao-uflp/build/CMakeFiles/rebuild_cache.dir
