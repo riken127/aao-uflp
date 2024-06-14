@@ -1,0 +1,6 @@
+/mnt/c/MyDocuments/PPorrto/AAO/aao-uflp/out/build/x64-Debug-GCC/CMakeFiles/algorithms.dir
+/mnt/c/MyDocuments/PPorrto/AAO/aao-uflp/out/build/x64-Debug-GCC/CMakeFiles/does_it_run_test.dir
+/mnt/c/MyDocuments/PPorrto/AAO/aao-uflp/out/build/x64-Debug-GCC/CMakeFiles/cost_test.dir
+/mnt/c/MyDocuments/PPorrto/AAO/aao-uflp/out/build/x64-Debug-GCC/CMakeFiles/test.dir
+/mnt/c/MyDocuments/PPorrto/AAO/aao-uflp/out/build/x64-Debug-GCC/CMakeFiles/edit_cache.dir
+/mnt/c/MyDocuments/PPorrto/AAO/aao-uflp/out/build/x64-Debug-GCC/CMakeFiles/rebuild_cache.dir

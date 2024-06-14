@@ -1,0 +1,33 @@
+#include <iostream>
+#include "TabuSearchAlgorithm.hpp"
+#include "Problem.hpp"
+#include "Customer.hpp"
+#include "Warehouse.hpp"
+
+int main() {
+	// Define o problema com 3 clientes e 2 armazéns
+	Problem problem(3, 2);
+
+	// Adiciona armazéns
+	problem.addWarehouse(Warehouse(10, 5));
+	problem.addWarehouse(Warehouse(15, 4));
+
+	// Adiciona clientes com seus custos de alocação para cada armazém
+	problem.addCustomer(Customer(5, {1, 3}));
+	problem.addCustomer(Customer(10, {2, 1}));
+	problem.addCustomer(Customer(15, {4, 2}));
+
+	// Cria o algoritmo Tabu Search
+	algorithm::TabuSearchAlgorithm tabuSearch;
+
+	// Resolve o problema
+	auto solution = tabuSearch.solve(problem);
+
+	// Exibe a solução
+	std::cout << "Solução: " << std::endl;
+	for (const auto& pair : solution) {
+		std::cout << "Cliente " << pair.first << " -> Armazém " << pair.second << std::endl;
+	}
+
+	return 0;
+}

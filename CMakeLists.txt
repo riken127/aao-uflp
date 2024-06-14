@@ -14,6 +14,8 @@ add_library(algorithms
     src/algorithms/GreedyAlgorithm.cpp
     src/algorithms/CrowSearchAlgorithm.cpp 
     src/algorithms/CrowSearchAlgorithm.hpp
+    src/algorithms/TabuSearchAlgorithm.hpp
+    src/algorithms/TabuSearchAlgorithm.cpp
 )
 
 add_library(misc 
@@ -21,13 +23,13 @@ add_library(misc
     src/misc/ORLibParser.hpp
     src/misc/ORLibParser.cpp
 )
-
 # Add executable targets for your tests
 add_executable(does_it_run_test src/tests/does_it_run_test.cpp)
 add_executable(greedy_algorithm_test_1 src/tests/greedy_algorithm/greedy_algorithm_test_1.cpp)
 add_executable(greedy_algorithm_test_2 src/tests/greedy_algorithm/greedy_algorithm_test_2.cpp)
 add_executable(greedy_algorithm_test_3 src/tests/greedy_algorithm/greedy_algorithm_test_3.cpp)
 add_executable(genetic_algorithm_test_1 src/tests/genetic_algorithm/genetic_algorithm_test_1.cpp)
+add_executable(cost_test src/tests/cost_test.cpp)
 # Add more test executables as needed
 
 # Link your algorithms library to the test executables
@@ -38,6 +40,7 @@ target_link_libraries(genetic_algorithm_test_1 PRIVATE algorithms)
 target_link_libraries(does_it_run_test PRIVATE misc)
 target_link_libraries(does_it_run_test PRIVATE algorithms)
 # Link more test executables as needed
+target_link_libraries(cost_test PRIVATE algorithms)
 
 enable_testing()
 # Register tests with CTest
@@ -51,6 +54,8 @@ add_test(NAME GreedyAlgorithmTest3
          COMMAND greedy_algorithm_test_3)
 add_test(NAME GeneticAlgorithmTest1
 		 COMMAND genetic_algorithm_test_1)
+add_test(NAME CostTest 
+         COMMAND cost_test_tabu_search)
 #add_test(NAME TestAlgorithm2 COMMAND test_algorithm2)
 # Add more tests as needed
 

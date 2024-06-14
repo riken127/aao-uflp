@@ -1,0 +1,7 @@
+# ninja log v5
+24	286	1718359666352620300	CMakeFiles/does_it_run_test.dir/src/tests/does_it_run_test.cpp.o	31709f2fa149e650
+14	211	1718373404472761600	does_it_run_test	356a20ebb7a055a4
+13	754	1718373405013230000	CMakeFiles/algorithms.dir/src/algorithms/TabuSearchAlgorithm.cpp.o	4a0e7c8ee6e00432
+24	233	1718373562767129900	libalgorithms.a	a47d8e37268d5a17
+24	441	1718373562967052400	CMakeFiles/cost_test.dir/src/tests/cost_test.cpp.o	459dbb304a5fad7a
+445	746	1718373563277781000	cost_test	88d2ef2d607bf5a4
