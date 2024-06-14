@@ -27,6 +27,13 @@ target_link_libraries(greedy_algorithm_test_1 PRIVATE algorithms)
 target_link_libraries(greedy_algorithm_test_2 PRIVATE algorithms)
 target_link_libraries(greedy_algorithm_test_3 PRIVATE algorithms)
 target_link_libraries(genetic_algorithm_test_1 PRIVATE algorithms)
+
+# Add executable targets for your tests
+add_executable(does_it_run_test src/tests/does_it_run_test.cpp)
+# Add more test executables as needed
+
+# Link your algorithms library to the test executables
+# target_link_libraries(test_algorithm1 PRIVATE algorithms)
 # Link more test executables as needed
 
 enable_testing()
