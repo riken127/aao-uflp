@@ -59,7 +59,7 @@ namespace algorithm {
 
         const int N = 400;  // Population size
         const double AP = 0.1;  // Awareness probability
-        const int MAX_ITER = 80000 / N;  // Number of iterations
+        const int MAX_ITER = 84000 / N;  // Number of iterations
 
         std::vector<bool> x(loc);
         std::vector<int> follow(N);
@@ -141,7 +141,6 @@ namespace algorithm {
             }
         }
 
-        std::cout << "Global best: " << global_best << std::endl;
         return final_assignments;
     }
 
