@@ -6,19 +6,51 @@ project(Algorithms)
 
 # Add your algorithms library
 # add_library(algorithms cool_algorithm.cpp super_fun_algorithm.cpp)
+add_library(algorithms
+    src/algorithms/Algorithm.hpp
+    src/algorithms/GeneticAlgorithm.cpp
+    src/algorithms/GeneticAlgorithm.hpp
+    src/algorithms/GreedyAlgorithm.hpp
+    src/algorithms/GreedyAlgorithm.cpp
+    src/algorithms/CrowSearchAlgorithm.cpp 
+    src/algorithms/CrowSearchAlgorithm.hpp
+)
+
+add_library(misc 
+    src/misc/Parseable.hpp
+    src/misc/ORLibParser.hpp
+    src/misc/ORLibParser.cpp
+)
 
 # Add executable targets for your tests
 add_executable(does_it_run_test src/tests/does_it_run_test.cpp)
+add_executable(greedy_algorithm_test_1 src/tests/greedy_algorithm/greedy_algorithm_test_1.cpp)
+add_executable(greedy_algorithm_test_2 src/tests/greedy_algorithm/greedy_algorithm_test_2.cpp)
+add_executable(greedy_algorithm_test_3 src/tests/greedy_algorithm/greedy_algorithm_test_3.cpp)
+add_executable(genetic_algorithm_test_1 src/tests/genetic_algorithm/genetic_algorithm_test_1.cpp)
 # Add more test executables as needed
 
 # Link your algorithms library to the test executables
-# target_link_libraries(test_algorithm1 PRIVATE algorithms)
+target_link_libraries(greedy_algorithm_test_1 PRIVATE algorithms)
+target_link_libraries(greedy_algorithm_test_2 PRIVATE algorithms)
+target_link_libraries(greedy_algorithm_test_3 PRIVATE algorithms)
+target_link_libraries(genetic_algorithm_test_1 PRIVATE algorithms)
+target_link_libraries(does_it_run_test PRIVATE misc)
+target_link_libraries(does_it_run_test PRIVATE algorithms)
 # Link more test executables as needed
 
 enable_testing()
 # Register tests with CTest
 add_test(NAME DoesItRun 
          COMMAND does_it_run_test)
+add_test(NAME GreedyAlgorithmTest1
+		 COMMAND greedy_algorithm_test_1)
+add_test(NAME GreedyAlgorithmTest2
+         COMMAND greedy_algorithm_test_2)
+add_test(NAME GreedyAlgorithmTest3
+         COMMAND greedy_algorithm_test_3)
+add_test(NAME GeneticAlgorithmTest1
+		 COMMAND genetic_algorithm_test_1)
 #add_test(NAME TestAlgorithm2 COMMAND test_algorithm2)
 # Add more tests as needed
 
@@ -72,5 +104,9 @@ if(EXISTS "${CMAKE_BINARY_DIR}/CMakeSettings.json")
 
         # Set build root and install root for each configuration
         set_property(TARGET does_it_run_test PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
+        set_property(TARGET greedy_algorithm_test_1 PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
+        set_property(TARGET greedy_algorithm_test_2 PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
+        set_property(TARGET greedy_algorithm_test_3 PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
+        set_property(TARGET genetic_algorithm_test_1 PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
     endforeach()
 endif()
