@@ -19,7 +19,7 @@
 * @see Customer
 */
 std::vector<std::pair<int, int>> algorithm::GreedyAlgorithm::solve(const Problem& problem) const {
-	const std::vector<Warehouse>& warehouses = problem.getWarehouses();
+	/*const std::vector<Warehouse>& warehouses = problem.getWarehouses();
 	const std::vector<Customer>& customers = problem.getCustomers();
 	int num_warehouses = warehouses.size();
 	int num_customers = customers.size();
@@ -32,7 +32,7 @@ std::vector<std::pair<int, int>> algorithm::GreedyAlgorithm::solve(const Problem
 
 	for (int i = 0; i < num_customers; ++i) {
 		const Customer& customer = customers[i];
-		const std::vector<int>& allocation_costs = customer.getAllocationCosts();
+		//const std::vector<int>allocation_costs(customer.getAllocationCosts(), 0);
 
 		int min_cost = std::numeric_limits<int>::max();
 		int min_warehouse = -1;
@@ -62,6 +62,5 @@ std::vector<std::pair<int, int>> algorithm::GreedyAlgorithm::solve(const Problem
 			}
 		}
 	}
-
-	return allocation;
+	return allocation;*/
 }

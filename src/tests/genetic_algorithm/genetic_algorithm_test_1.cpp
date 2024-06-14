@@ -1,5 +1,5 @@
 #include "../../problem/Problem.hpp"
-#include "../../algorithms/GeneticAlgorithm.hpp"
+#include "../../algorithms/CrowSearchAlgorithm.hpp"
 #include <iostream>
 
 int main() {
@@ -10,10 +10,10 @@ int main() {
 	problem3.addCustomer(Customer(30, { 4, 6 }));
 	problem3.addCustomer(Customer(70, { 6, 9 }));
 	// Create an instance of the GeneticAlgorithm
-	algorithm::GeneticAlgorithm genetic;
+	algorithm::CrowSearchAlgorithm csa;
 
 	// Solve the problem using the GeneticAlgorithm
-	auto solution = genetic.solve(problem3);
+	auto solution = csa.solve(problem3);
 
 	// Print the solution
 	std::cout << "Solution:" << std::endl;

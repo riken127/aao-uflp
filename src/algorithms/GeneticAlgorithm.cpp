@@ -16,7 +16,7 @@ std::vector<algorithm::GeneticAlgorithm::Assignment> algorithm::GeneticAlgorithm
 			initial_assignments.push_back({ c_idx, w_idx, costs[w_idx] });
 		}
 	}
-
+	
 	return initial_assignments;
 }
 
@@ -46,16 +46,12 @@ std::vector<std::pair<int, int>> algorithm::GeneticAlgorithm::solve(const Proble
 	const auto& customers = problem.getCustomers();
 	const auto& warehouses = problem.getWarehouses();
 
-	// Step 1: Calculate initial assignments based on cost
 	std::vector<Assignment> assignments = calculateInitialAssignments(customers, warehouses);
 
-	// Step 2: Sort assignments by cost
 	sortAssignmentsByCost(assignments);
 
-	// Step 3: Find the best warehouses to open
 	std::vector<int> best_warehouses = findBestWarehouses(assignments, warehouses, problem.getNumberOfCustomers());
 
-	// Step 4: Make final assignments based on opened warehouses
 	std::vector<std::pair<int, int>> final_assignments;
 	std::vector<int> warehouse_usage(warehouses.size(), 0);
 
