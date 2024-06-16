@@ -1,6 +1,8 @@
 #include <iostream>
 #include <unordered_map>
 #include <iomanip>
+#include <limits>
+
 #include "../../misc/ORLibParser.hpp"
 #include "../../problem/Problem.hpp"
 #include "../../algorithms/CrowSearchAlgorithm.hpp"
@@ -13,9 +15,9 @@ bool isAlmostEqual(double a, double b, double epsilon = 1e-3) {
 int main() {
 	miscellaneous::ORLibParser parser;
 	try {
-		Problem problem = parser.parse("/mnt/c/Users/henri/Source/Repos/aao-uflp/src/tests/FicheirosTeste/ORLIB/ORLIB-uncap/a-c/capb.txt");
+		Problem problem = parser.parse("../src/tests/FicheirosTeste/ORLIB/ORLIB-uncap/a-c/capb.txt");
 
-		algorithm::CrowSearchAlgorithm csa;
+		algorithm::CrowSearchAlgorithm csa(400, 0.1, 80000);
 
 		auto solution = csa.solve(problem);
 
@@ -36,7 +38,7 @@ int main() {
 		}
 
 		double totalCost = totalAllocationCost + totalFixedCost;
-		std::cout << std::defaultfloat << std::setprecision(std::numeric_limits<double>::digits10 + 1);
+		std::cout << std::defaultfloat << std::setprecision(std::numeric_limits	<double>::digits10 + 1);
 		std::cout << "Total cost (full precision): " << totalCost << std::endl;
 		std::cout << "Optimal cost (full precision): " << OPTIMAL_SOLUTION << std::endl;
 		std::cout << "Total Allocation costs: " << totalAllocationCost << std::endl;

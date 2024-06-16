@@ -10,7 +10,7 @@ int main() {
 	problem3.addCustomer(Customer(30, { 4, 6 }));
 	problem3.addCustomer(Customer(70, { 6, 9 }));
 	// Create an instance of the GeneticAlgorithm
-	algorithm::CrowSearchAlgorithm csa;
+	algorithm::CrowSearchAlgorithm csa(400, 0.1, 800000);
 
 	// Solve the problem using the GeneticAlgorithm
 	auto solution = csa.solve(problem3);
