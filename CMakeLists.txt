@@ -8,49 +8,69 @@ project(Algorithms)
 # add_library(algorithms cool_algorithm.cpp super_fun_algorithm.cpp)
 add_library(algorithms
     src/algorithms/Algorithm.hpp
-    src/algorithms/GeneticAlgorithm.cpp
-    src/algorithms/GeneticAlgorithm.hpp
-    src/algorithms/GreedyAlgorithm.hpp
-    src/algorithms/GreedyAlgorithm.cpp
     src/algorithms/CrowSearchAlgorithm.cpp 
     src/algorithms/CrowSearchAlgorithm.hpp
+    src/algorithms/GRASP.cpp
+    src/algorithms/GRASP.hpp
 )
-
 add_library(misc 
     src/misc/Parseable.hpp
     src/misc/ORLibParser.hpp
     src/misc/ORLibParser.cpp
+    src/misc/MParser.hpp
+    src/misc/MParser.cpp
 )
 
 # Add executable targets for your tests
-add_executable(does_it_run_test src/tests/does_it_run_test.cpp)
-add_executable(greedy_algorithm_test_1 src/tests/greedy_algorithm/greedy_algorithm_test_1.cpp)
-add_executable(greedy_algorithm_test_2 src/tests/greedy_algorithm/greedy_algorithm_test_2.cpp)
-add_executable(greedy_algorithm_test_3 src/tests/greedy_algorithm/greedy_algorithm_test_3.cpp)
-add_executable(genetic_algorithm_test_1 src/tests/genetic_algorithm/genetic_algorithm_test_1.cpp)
+add_executable(GRASP_algorithm_test_capa src/tests/GRASP_algorithm/GRASP_algorithm_test_capa.cpp)
+add_executable(GRASP_algorithm_test_capb src/tests/GRASP_algorithm/GRASP_algorithm_test_capb.cpp)
+add_executable(GRASP_algorithm_test_capc src/tests/GRASP_algorithm/GRASP_algorithm_test_capc.cpp)
+add_executable(GRASP_algorithm_test_mr1 src/tests/GRASP_algorithm/GRASP_algorithm_test_mr1.cpp)
+add_executable(GRASP_algorithm_test_mr2 src/tests/GRASP_algorithm/GRASP_algorithm_test_mr2.cpp)
+add_executable(GRASP_algorithm_test_mr3 src/tests/GRASP_algorithm/GRASP_algorithm_test_mr3.cpp)
+add_executable(GRASP_algorithm_test_mr4 src/tests/GRASP_algorithm/GRASP_algorithm_test_mr4.cpp)
+add_executable(GRASP_algorithm_test_mr5 src/tests/GRASP_algorithm/GRASP_algorithm_test_mr5.cpp)
+
 # Add more test executables as needed
 
 # Link your algorithms library to the test executables
-target_link_libraries(greedy_algorithm_test_1 PRIVATE algorithms)
-target_link_libraries(greedy_algorithm_test_2 PRIVATE algorithms)
-target_link_libraries(greedy_algorithm_test_3 PRIVATE algorithms)
-target_link_libraries(genetic_algorithm_test_1 PRIVATE algorithms)
-target_link_libraries(does_it_run_test PRIVATE misc)
-target_link_libraries(does_it_run_test PRIVATE algorithms)
-# Link more test executables as needed
+# target_link_libraries(test_algorithm1 PRIVATE algorithms)
+target_link_libraries(GRASP_algorithm_test_capa PRIVATE algorithms)
+target_link_libraries(GRASP_algorithm_test_capa PRIVATE misc)
+target_link_libraries(GRASP_algorithm_test_capb PRIVATE algorithms)
+target_link_libraries(GRASP_algorithm_test_capb PRIVATE misc)
+target_link_libraries(GRASP_algorithm_test_capc PRIVATE algorithms)
+target_link_libraries(GRASP_algorithm_test_capc PRIVATE misc)
+target_link_libraries(GRASP_algorithm_test_mr1 PRIVATE algorithms)
+target_link_libraries(GRASP_algorithm_test_mr1 PRIVATE misc)
+target_link_libraries(GRASP_algorithm_test_mr2 PRIVATE algorithms)
+target_link_libraries(GRASP_algorithm_test_mr2 PRIVATE misc)
+target_link_libraries(GRASP_algorithm_test_mr3 PRIVATE algorithms)
+target_link_libraries(GRASP_algorithm_test_mr3 PRIVATE misc)
+target_link_libraries(GRASP_algorithm_test_mr4 PRIVATE algorithms)
+target_link_libraries(GRASP_algorithm_test_mr4 PRIVATE misc)
+target_link_libraries(GRASP_algorithm_test_mr5 PRIVATE algorithms)
+target_link_libraries(GRASP_algorithm_test_mr5 PRIVATE misc)
 
+# Link more test executables as needed
 enable_testing()
 # Register tests with CTest
-add_test(NAME DoesItRun 
-         COMMAND does_it_run_test)
-add_test(NAME GreedyAlgorithmTest1
-		 COMMAND greedy_algorithm_test_1)
-add_test(NAME GreedyAlgorithmTest2
-         COMMAND greedy_algorithm_test_2)
-add_test(NAME GreedyAlgorithmTest3
-         COMMAND greedy_algorithm_test_3)
-add_test(NAME GeneticAlgorithmTest1
-		 COMMAND genetic_algorithm_test_1)
+add_test(Name GRASPAlgorithmTestCapA
+         COMMAND GRASP_algorithm_test_capa)
+add_test(Name GRASPAlgorithmTestCapB
+         COMMAND GRASP_algorithm_test_capb)
+add_test(Name GRASPAlgorithmTestCapC
+         COMMAND GRASP_algorithm_test_capc)
+add_test(Name GRASPAlgorithmTestMr1
+         COMMAND GRASP_algorithm_test_mr1)
+add_test(Name GRASPAlgorithmTestMr2
+         COMMAND GRASP_algorithm_test_mr2)
+add_test(Name GRASPAlgorithmTestMr3
+         COMMAND GRASP_algorithm_test_mr3)
+add_test(Name GRASPAlgorithmTestMr4
+         COMMAND GRASP_algorithm_test_mr4)
+add_test(Name GRASPAlgorithmTestMr5
+         COMMAND GRASP_algorithm_test_mr5)
 #add_test(NAME TestAlgorithm2 COMMAND test_algorithm2)
 # Add more tests as needed
 
@@ -103,10 +123,15 @@ if(EXISTS "${CMAKE_BINARY_DIR}/CMakeSettings.json")
         file(MAKE_DIRECTORY ${INSTALL_CONFIG_DIR})
 
         # Set build root and install root for each configuration
-        set_property(TARGET does_it_run_test PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
-        set_property(TARGET greedy_algorithm_test_1 PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
-        set_property(TARGET greedy_algorithm_test_2 PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
-        set_property(TARGET greedy_algorithm_test_3 PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
-        set_property(TARGET genetic_algorithm_test_1 PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
+        set_property(TARGET GRASP_algorithm_test_capa PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
+        set_property(TARGET GRASP_algorithm_test_capb PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
+        set_property(TARGET GRASP_algorithm_test_capc PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
+        set_property(TARGET GRASP_algorithm_test_mr1 PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
+        set_property(TARGET GRASP_algorithm_test_mr2 PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
+        set_property(TARGET GRASP_algorithm_test_mr3 PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
+        set_property(TARGET GRASP_algorithm_test_mr4 PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
+        set_property(TARGET GRASP_algorithm_test_mr5 PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
+
+
     endforeach()
 endif()
