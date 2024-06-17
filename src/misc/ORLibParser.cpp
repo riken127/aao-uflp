@@ -45,4 +45,3 @@ Problem miscellaneous::ORLibParser::parse(const std::string& path) const {
 
     return problem;
 }
-
