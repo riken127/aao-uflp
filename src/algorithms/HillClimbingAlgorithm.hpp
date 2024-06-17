@@ -14,4 +14,4 @@ private:
     void getBestNeighbor(const Problem& problem, const std::vector<bool>& currentSolution, std::vector<bool>& bestNeighbor) const;
 };
 
-} // namespace algorithm
+} 

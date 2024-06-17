@@ -63,9 +63,12 @@ std::vector<std::pair<int, int>> HillClimbingAlgorithm::solve(const Problem& pro
     double currentCost = calculateCost(problem, currentSolution);
     bool localOptimum = false;
 
+    int iteration = 0;
+
     while (!localOptimum) {
-        auto start = std::chrono::high_resolution_clock::now(); // Start timing
-    
+        ++iteration;
+
+        auto start = std::chrono::high_resolution_clock::now();
         std::vector<bool> neighborSolution;
         getBestNeighbor(problem, currentSolution, neighborSolution);
     
@@ -78,10 +81,10 @@ std::vector<std::pair<int, int>> HillClimbingAlgorithm::solve(const Problem& pro
             localOptimum = true;
         }
     
-        auto end = std::chrono::high_resolution_clock::now(); // End timing
-        std::chrono::duration<double> elapsed = end - start; // Calculate elapsed time
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> elapsed = end - start;
     
-        std::cout << "Iteration time: " << std::fixed << std::setprecision(2) << elapsed.count() << "s. New total cost: " << currentCost << std::endl;
+        std::cout << "Iteration " << iteration << " time: " << std::fixed << std::setprecision(2) << elapsed.count() << "s. New total cost: " << currentCost << std::endl;
     }
 
     std::vector<std::pair<int, int>> assignments;

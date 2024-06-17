@@ -1,6 +1,9 @@
 #include "MParser.hpp"
 #include "../problem/Problem.hpp"
 #include <fstream>
+#include <sstream>
+#include <vector>
+#include <stdexcept>
 
 Problem miscellaneous::MParser::parse(const std::string& path) const {
     std::ifstream file(path);
@@ -45,15 +48,23 @@ Problem miscellaneous::MParser::parse(const std::string& path) const {
             throw std::runtime_error("Error parsing customer demand");
         }
 
-        std::vector<double> allocation_costs(problem.num_warehouses);
-        if (!std::getline(file, line)) {
-            throw std::runtime_error("Error reading allocation costs");
-        }
-        std::istringstream cost_stream(line);
-        for (int j = 0; j < problem.num_warehouses; ++j) {
-            if (!(cost_stream >> allocation_costs[j])) {
-                throw std::runtime_error("Error parsing allocation costs");
+        std::vector<double> allocation_costs;
+        allocation_costs.reserve(problem.num_warehouses);
+
+        int num_lines = (problem.num_warehouses + 7) / 8; // Determine the number of lines needed to read all costs
+        for (int l = 0; l < num_lines; ++l) {
+            if (!std::getline(file, line)) {
+                throw std::runtime_error("Error reading allocation costs");
             }
+            std::istringstream cost_stream(line);
+            double cost;
+            while (cost_stream >> cost) {
+                allocation_costs.push_back(cost);
+            }
+        }
+
+        if (allocation_costs.size() != problem.num_warehouses) {
+            throw std::runtime_error("Mismatch in the number of allocation costs");
         }
 
         problem.customers.emplace_back(demand, allocation_costs);
