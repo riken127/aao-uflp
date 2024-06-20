@@ -14,21 +14,29 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        compiler: [g++, clang++] 
+        compiler: [g++, clang++]
         build_type: [Debug, Release]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install CMake
+      - name: Install dependencies
         if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get update && sudo apt-get install -y cmake
-
-      - name: Run CMake build and test
         run: |
-          cmake -B build -S . \
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build ${{ matrix.compiler == 'g++' && 'g++' || 'clang' }}
+
+      - name: Configure CMake
+        run: |
+          mkdir -p out/build/x64-${{ matrix.build_type }}-${{ matrix.compiler == 'g++' && 'GCC' || 'Clang' }}
+          cmake -S . -B out/build/x64-${{ matrix.build_type }}-${{ matrix.compiler == 'g++' && 'GCC' || 'Clang' }} \
+            -G "Ninja" \
             -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
             -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
-          cmake --build build --config ${{ matrix.build_type }}
-          cd build && ctest -C ${{ matrix.build_type }} -VV
+
+      - name: Build with Ninja
+        run: ninja -C out/build/x64-${{ matrix.build_type }}-${{ matrix.compiler == 'g++' && 'GCC' || 'Clang' }}
+
+      - name: Run tests with CTest
+        run: ctest -C ${{ matrix.build_type }} -VV -S out/build/x64-${{ matrix.build_type }}-${{ matrix.compiler == 'g++' && 'GCC' || 'Clang' }}
