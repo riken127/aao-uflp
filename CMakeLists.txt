@@ -8,10 +8,12 @@ project(Algorithms)
 # add_library(algorithms cool_algorithm.cpp super_fun_algorithm.cpp)
 add_library(algorithms
     src/algorithms/Algorithm.hpp
-    src/algorithms/CrowSearchAlgorithm.cpp
+    src/algorithms/HillClimbingAlgorithm.cpp
+        src/algorithms/HillClimbingAlgorithm.hpp
+        src/algorithms/GRASP.cpp
+        src/algorithms/GRASP.hpp
+    src/algorithms/CrowSearchAlgorithm.cpp 
     src/algorithms/CrowSearchAlgorithm.hpp
-    src/algorithms/GRASP.cpp
-    src/algorithms/GRASP.hpp
         src/algorithms/SimulatedAnnealingAlgorithm.cpp
         src/algorithms/SimulatedAnnealingAlgorithm.h
 )
@@ -25,6 +27,15 @@ add_library(misc
 )
 
 # Add executable targets for your tests
+add_executable(hill_climbing_algorithm_test_capa src/tests/hill_climbing_algorithm/hill_climbing_algorithm_test_capa.cpp)
+add_executable(hill_climbing_algorithm_test_capb src/tests/hill_climbing_algorithm/hill_climbing_algorithm_test_capb.cpp)
+add_executable(hill_climbing_algorithm_test_capc src/tests/hill_climbing_algorithm/hill_climbing_algorithm_test_capc.cpp)
+add_executable(hill_climbing_algorithm_test_mr1 src/tests/hill_climbing_algorithm/hill_climbing_algorithm_test_mr1.cpp)
+add_executable(hill_climbing_algorithm_test_mr2 src/tests/hill_climbing_algorithm/hill_climbing_algorithm_test_mr2.cpp)
+add_executable(hill_climbing_algorithm_test_mr3 src/tests/hill_climbing_algorithm/hill_climbing_algorithm_test_mr3.cpp)
+add_executable(hill_climbing_algorithm_test_mr4 src/tests/hill_climbing_algorithm/hill_climbing_algorithm_test_mr4.cpp)
+add_executable(hill_climbing_algorithm_test_mr5 src/tests/hill_climbing_algorithm/hill_climbing_algorithm_test_mr5.cpp)
+
 add_executable(GRASP_algorithm_test_capa src/tests/GRASP_algorithm/GRASP_algorithm_test_capa.cpp)
 add_executable(GRASP_algorithm_test_capb src/tests/GRASP_algorithm/GRASP_algorithm_test_capb.cpp)
 add_executable(GRASP_algorithm_test_capc src/tests/GRASP_algorithm/GRASP_algorithm_test_capc.cpp)
@@ -34,9 +45,6 @@ add_executable(GRASP_algorithm_test_mr3 src/tests/GRASP_algorithm/GRASP_algorith
 add_executable(GRASP_algorithm_test_mr4 src/tests/GRASP_algorithm/GRASP_algorithm_test_mr4.cpp)
 add_executable(GRASP_algorithm_test_mr5 src/tests/GRASP_algorithm/GRASP_algorithm_test_mr5.cpp)
 
-add_executable(greedy_algorithm_test_1 src/tests/greedy_algorithm/greedy_algorithm_test_1.cpp)
-add_executable(greedy_algorithm_test_2 src/tests/greedy_algorithm/greedy_algorithm_test_2.cpp)
-add_executable(greedy_algorithm_test_3 src/tests/greedy_algorithm/greedy_algorithm_test_3.cpp)
 add_executable(simulated_annealing_test_capa src/tests/simulated_annealing_algorithm/simulated_annealing_test_capa.cpp)
 add_executable(simulated_annealing_test_capb src/tests/simulated_annealing_algorithm/simulated_annealing_test_capb.cpp)
 add_executable(simulated_annealing_test_capc src/tests/simulated_annealing_algorithm/simulated_annealing_test_capc.cpp)
@@ -118,7 +126,22 @@ add_test(NAME SimulatedAnnealingTestMR4
         COMMAND simulated_annealing_test_mr4)
 add_test(NAME SimulatedAnnealingTestMR5
         COMMAND simulated_annealing_test_mr5)
-
+add_test(Name HillClimbingAlgorithmTestCapA
+        COMMAND hill_climbing_algorithm_test_capa)
+add_test(Name HillClimbingAlgorithmTestCapB
+        COMMAND hill_climbing_algorithm_test_capb)
+add_test(Name HillClimbingAlgorithmTestCapC
+        COMMAND hill_climbing_algorithm_test_capc)
+add_test(Name HillClimbingAlgorithmTestMr1
+        COMMAND hill_climbing_algorithm_test_mr1)
+add_test(Name HillClimbingAlgorithmTestMr2
+        COMMAND hill_climbing_algorithm_test_mr2)
+add_test(Name HillClimbingAlgorithmTestMr3
+        COMMAND hill_climbing_algorithm_test_mr3)
+add_test(Name HillClimbingAlgorithmTestMr4
+        COMMAND hill_climbing_algorithm_test_mr4)
+add_test(Name HillClimbingAlgorithmTestMr5
+        COMMAND hill_climbing_algorithm_test_mr5)
 #add_test(NAME TestAlgorithm2 COMMAND test_algorithm2)
 # Add more tests as needed
 
@@ -187,5 +210,15 @@ if(EXISTS "${CMAKE_BINARY_DIR}/CMakeSettings.json")
         set_property(TARGET simulated_annealing_test_mr3 PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
         set_property(TARGET simulated_annealing_test_mr4 PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
         set_property(TARGET simulated_annealing_test_mr5 PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
+        set_property(TARGET hill_climbing_algorithm_test_capa PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
+        set_property(TARGET hill_climbing_algorithm_test_capb PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
+        set_property(TARGET hill_climbing_algorithm_test_capc PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
+        set_property(TARGET hill_climbing_algorithm_test_mr1 PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
+        set_property(TARGET hill_climbing_algorithm_test_mr2 PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
+        set_property(TARGET hill_climbing_algorithm_test_mr3 PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
+        set_property(TARGET hill_climbing_algorithm_test_mr4 PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
+        set_property(TARGET hill_climbing_algorithm_test_mr5 PROPERTY RUNTIME_OUTPUT_DIRECTORY ${BUILD_CONFIG_DIR})
+
+
     endforeach()
 endif()
