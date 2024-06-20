@@ -3,7 +3,7 @@
 #include <iomanip>
 #include <cmath>
 #include "../../problem/Problem.hpp"
-#include "../../algorithms/SimulatedAnnealingAlgorithm.h"
+#include "../../algorithms/SimulatedAnnealingAlgorithm.hpp"
 #include "../../misc/MParser.hpp"
 #define OPTIMAL_SOLUTION 2608.14
 

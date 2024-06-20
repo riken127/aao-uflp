@@ -1,4 +1,4 @@
-#include "SimulatedAnnealingAlgorithm.h"
+#include "SimulatedAnnealingAlgorithm.hpp"
 #include <algorithm>
 #include <iostream>
 #include <unordered_set>
