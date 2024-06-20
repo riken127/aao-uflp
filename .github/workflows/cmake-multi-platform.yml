@@ -36,7 +36,11 @@ jobs:
             -DCMAKE_CXX_COMPILER=${{ matrix.compiler }}
 
       - name: Build with Ninja
-        run: ninja -C out/build/x64-${{ matrix.build_type }}-${{ matrix.compiler == 'g++' && 'GCC' || 'Clang' }}
+        run: |
+          cd out/build/x64-${{ matrix.build_type }}-${{ matrix.compiler == 'g++' && 'GCC' || 'Clang' }}
+          ninja
 
       - name: Run tests with CTest
-        run: ctest -C ${{ matrix.build_type }} -VV -S out/build/x64-${{ matrix.build_type }}-${{ matrix.compiler == 'g++' && 'GCC' || 'Clang' }}
+        run: |
+          cd out/build/x64-${{ matrix.build_type }}-${{ matrix.compiler == 'g++' && 'GCC' || 'Clang' }}
+          ctest -C ${{ matrix.build_type }} -VV
