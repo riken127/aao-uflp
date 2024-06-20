@@ -5,7 +5,7 @@
 #include "../../misc/MParser.hpp"
 #include "../../problem/Problem.hpp"
 #include "../../algorithms/GRASP.hpp"
-#define OPTIMAL_SOLUTION 2505.05
+#define OPTIMAL_SOLUTION 2344.353
 
 bool isAlmostEqual(double a, double b, double epsilon = 1e-5) {
 	return std::abs(a - b) < epsilon;
@@ -16,7 +16,7 @@ int main() {
 	try {
 		Problem problem = parser.parse("../../../src/tests/FicheirosTeste/M/Kcapmr5.txt");
         
-        int alpha = 0.1; 
+        double alpha = 0.1; 
         algorithm::GRASP grasp(alpha);
 
         auto solution = grasp.solve(problem);

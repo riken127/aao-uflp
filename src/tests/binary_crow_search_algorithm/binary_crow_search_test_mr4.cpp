@@ -14,7 +14,7 @@ bool isAlmostEqual(double a, double b, double epsilon = 1e-5) {
 int main() {
 	miscellaneous::MParser parser;
 	try {
-		Problem problem = parser.parse("../src/tests/FicheirosTeste/M/Kcapmr4.txt");
+		Problem problem = parser.parse("../../../src/tests/FicheirosTeste/M/Kcapmr4.txt");
 
 		algorithm::CrowSearchAlgorithm csa(400, 0.1, 800000);
 

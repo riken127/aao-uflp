@@ -15,7 +15,7 @@ int main() {
 	try {
 		Problem problem = parser.parse("../../../src/tests/FicheirosTeste/ORLIB/ORLIB-uncap/a-c/capc.txt");
         
-        int alpha = 0.1; 
+        double alpha = 0.1; 
         algorithm::GRASP grasp(alpha);
 
         auto solution = grasp.solve(problem);

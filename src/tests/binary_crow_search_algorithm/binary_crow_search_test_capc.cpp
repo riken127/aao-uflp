@@ -13,7 +13,7 @@ bool isAlmostEqual(double a, double b, double epsilon = 1e-3) {
 int main() {
 	miscellaneous::ORLibParser parser;
 	try {
-		Problem problem = parser.parse("../src/tests/FicheirosTeste/ORLIB/ORLIB-uncap/a-c/capc.txt");
+		Problem problem = parser.parse("../../../src/tests/FicheirosTeste/ORLIB/ORLIB-uncap/a-c/capc.txt");
 
 		algorithm::CrowSearchAlgorithm csa(400, 0.1, 840000);
 
