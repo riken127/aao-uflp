@@ -19,8 +19,8 @@ int main()
     try
     {
         Problem problem = parser.parse("../../../src/tests/FicheirosTeste/ORLIB/ORLIB-uncap/a-c/capb.txt");
-        
-        int alpha = 0.1; 
+
+        int alpha = 0.1;
         algorithm::HillClimbingAlgorithm hca;
 
         auto solution = hca.solve(problem);
@@ -30,13 +30,13 @@ int main()
 
         std::unordered_map<int, bool> usedWarehouses;
 
-        for (const auto &assignment : solution)
+        for (const auto& assignment : solution)
         {
             totalAllocationCost += problem.getCustomers()[assignment.first].getAllocationCosts()[assignment.second];
             usedWarehouses[assignment.second] = true;
         }
 
-        for (const auto &warehouse : usedWarehouses)
+        for (const auto& warehouse : usedWarehouses)
         {
             if (warehouse.second)
             {
@@ -62,11 +62,11 @@ int main()
             return 1;
         }
     }
-    catch (const std::exception &e)
+    catch (const std::exception& e)
     {
         std::cerr << "Error parsing file: " << e.what() << std::endl;
-        return 1; 
+        return 1;
     }
 
-    return 0; 
+    return 0;
 }

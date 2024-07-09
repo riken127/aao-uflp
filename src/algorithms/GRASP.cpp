@@ -277,7 +277,7 @@ namespace algorithm
                         double cost = ReassignCustomers();
                         warehouse_open[i] = false;
                         costs[i] = cost;
-                        is_open[i] = true; 
+                        is_open[i] = true;
                         }));
                 }
             }
