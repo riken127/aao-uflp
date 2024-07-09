@@ -15,9 +15,9 @@ bool isAlmostEqual(double a, double b, double epsilon = 1e-3) {
 int main() {
     miscellaneous::ORLibParser parser;
     try {
-        Problem problem = parser.parse("../../../src/tests/FicheirosTeste/ORLIB/ORLIB-uncap/a-c/capa.txt");
+        Problem problem = parser.parse("../src/tests/FicheirosTeste/ORLIB/ORLIB-uncap/a-c/capa.txt");
         algorithm::SimulatedAnnealingAlgorithm simulated_annealing_algorithm(1000
-            , 0.1, 0.9, 200);
+            , 0.01, 0.40, 60, 200);
 
         auto solution = simulated_annealing_algorithm.solve(problem);
 

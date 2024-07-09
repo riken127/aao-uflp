@@ -1,12 +1,13 @@
+// SimulatedAnnealingAlgorithm.cpp
+
 #include "SimulatedAnnealingAlgorithm.hpp"
 #include <algorithm>
 #include <iostream>
 #include <unordered_set>
 
-/**
- * Calculates the total cost of the given assignment.
- */
-double algorithm::SimulatedAnnealingAlgorithm::calculateCost(const std::vector<int>& assignment, const Problem& problem) const {
+using namespace algorithm;
+
+double SimulatedAnnealingAlgorithm::calculateCost(const std::vector<int>& assignment, const Problem& problem) const {
     double total_cost = 0.0;
     const auto& warehouses = problem.getWarehouses();
     const auto& customers = problem.getCustomers();
@@ -24,37 +25,64 @@ double algorithm::SimulatedAnnealingAlgorithm::calculateCost(const std::vector<i
     return total_cost;
 }
 
-/**
- * Generates a neighboring solution by randomly perturbing a small subset of the current solution.
- */
-algorithm::SimulatedAnnealingAlgorithm::Solution algorithm::SimulatedAnnealingAlgorithm::generateNeighbor(const Solution& current_solution, const Problem& problem) const {
+SimulatedAnnealingAlgorithm::Solution SimulatedAnnealingAlgorithm::generateInitialSolution(const Problem& problem) const {
+    Solution initial_solution;
+    const auto& warehouses = problem.getWarehouses();
+    const auto& customers = problem.getCustomers();
+
+    initial_solution.assignment.resize(customers.size());
+
+    // Simple greedy heuristic: Assign each customer to the cheapest warehouse
+    for (int j = 0; j < customers.size(); ++j) {
+        int best_warehouse = 0;
+        double best_cost = customers[j].getAllocationCosts()[0];
+        for (int i = 1; i < warehouses.size(); ++i) {
+            double cost = customers[j].getAllocationCosts()[i];
+            if (cost < best_cost) {
+                best_warehouse = i;
+                best_cost = cost;
+            }
+        }
+        initial_solution.assignment[j] = best_warehouse;
+    }
+
+    initial_solution.total_cost = calculateCost(initial_solution.assignment, problem);
+    return initial_solution;
+}
+
+SimulatedAnnealingAlgorithm::Solution SimulatedAnnealingAlgorithm::generateNeighbor(const Solution& current_solution, const Problem& problem) const {
     RandomGenerator random;
     Solution new_solution = current_solution;
 
-    int num_perturbations = std::min(problem.getNumberOfCustomers() / 10, 25);
-    std::unordered_set<int> perturbed_customers;
-    while (perturbed_customers.size() < num_perturbations) {
-        perturbed_customers.insert(random.getRandomInt(problem.getNumberOfCustomers()));
-    }
+    // Choose a move type: 0 = swap, 1 = insert
+    int move_type = random.getRandomInt(2);
 
-    for (int client : perturbed_customers) {
-        new_solution.assignment[client] = random.getRandomInt(problem.getNumberOfWarehouses());
+    if (move_type == 0) {
+        // Swap two random customers
+        int customer1 = random.getRandomInt(problem.getNumberOfCustomers());
+        int customer2 = random.getRandomInt(problem.getNumberOfCustomers());
+        while (customer1 == customer2) {
+            customer2 = random.getRandomInt(problem.getNumberOfCustomers());
+        }
+        std::swap(new_solution.assignment[customer1], new_solution.assignment[customer2]);
+    } else if (move_type == 1) {
+        // Insert a customer to a different warehouse
+        int customer = random.getRandomInt(problem.getNumberOfCustomers());
+        int new_warehouse = random.getRandomInt(problem.getNumberOfWarehouses());
+        new_solution.assignment[customer] = new_warehouse;
     }
 
     localSearch(new_solution, problem, 6);
     return new_solution;
 }
 
-/**
- * Performs a local search to refine the given solution using a tabu list to avoid cycles.
- */
-void algorithm::SimulatedAnnealingAlgorithm::localSearch(Solution& solution, const Problem& problem, int tabu_tenure) const {
+void SimulatedAnnealingAlgorithm::localSearch(Solution& solution, const Problem& problem, int tabu_tenure) const {
     const auto& warehouses = problem.getWarehouses();
     const auto& customers = problem.getCustomers();
     std::unordered_set<int> tabu_list;
     int iterations_without_improvement = 0;
 
-    while (iterations_without_improvement < 20) {
+    while (iterations_without_improvement < max_iterations_without_improvement) {
         bool found_improvement = false;
 
         for (int j = 0; j < customers.size(); ++j) {
@@ -98,10 +126,7 @@ void algorithm::SimulatedAnnealingAlgorithm::localSearch(Solution& solution, con
     solution.total_cost = calculateCost(solution.assignment, problem);
 }
 
-/**
- * Generates a new solution by adaptively perturbing a portion of the current solution based on the iteration number.
- */
-algorithm::SimulatedAnnealingAlgorithm::Solution algorithm::SimulatedAnnealingAlgorithm::adaptivePerturbation(const Solution& current_solution, const Problem& problem, int iteration) const {
+SimulatedAnnealingAlgorithm::Solution SimulatedAnnealingAlgorithm::adaptivePerturbation(const Solution& current_solution, const Problem& problem, int iteration) const {
     RandomGenerator random;
     Solution new_solution = current_solution;
 
@@ -120,21 +145,12 @@ algorithm::SimulatedAnnealingAlgorithm::Solution algorithm::SimulatedAnnealingAl
     return new_solution;
 }
 
-/**
- * Solves the problem using the simulated annealing algorithm.
- */
-std::vector<std::pair<int, int>> algorithm::SimulatedAnnealingAlgorithm::solve(const Problem& problem) const {
+std::vector<std::pair<int, int>> SimulatedAnnealingAlgorithm::solve(const Problem& problem) const {
     RandomGenerator random;
     int num_warehouses = problem.getNumberOfWarehouses();
     int num_customers = problem.getNumberOfCustomers();
 
-    Solution initial_solution;
-    initial_solution.assignment.resize(num_customers);
-    for (int j = 0; j < num_customers; ++j) {
-        initial_solution.assignment[j] = random.getRandomInt(num_warehouses);
-    }
-    initial_solution.total_cost = calculateCost(initial_solution.assignment, problem);
-
+    Solution initial_solution = generateInitialSolution(problem);
     Solution current_solution = initial_solution;
     Solution best_solution = current_solution;
 
@@ -159,6 +175,7 @@ std::vector<std::pair<int, int>> algorithm::SimulatedAnnealingAlgorithm::solve(c
             }
         }
 
+        // Geometric cooling schedule
         temperature *= cooling_rate;
 
         if (++iteration % 30 == 0) {
