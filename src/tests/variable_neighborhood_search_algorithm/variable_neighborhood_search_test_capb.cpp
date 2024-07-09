@@ -5,7 +5,7 @@
 
 #include "../../misc/ORLibParser.hpp"
 #include "../../problem/Problem.hpp"
-#include "../../algorithms/HillClimbingAlgorithm.hpp"
+#include "../../algorithms/VariableNeighborhoodSearchAlgorithm.h"
 #define OPTIMAL_SOLUTION 12979071.58143
 
 bool isAlmostEqual(double a, double b, double epsilon = 1e-3)
@@ -18,11 +18,11 @@ int main()
     miscellaneous::ORLibParser parser;
     try
     {
-        Problem problem = parser.parse("../../../src/tests/FicheirosTeste/ORLIB/ORLIB-uncap/a-c/capb.txt");
+        Problem problem = parser.parse("../src/tests/FicheirosTeste/ORLIB/ORLIB-uncap/a-c/capb.txt");
         
-        algorithm::HillClimbingAlgorithm hca;
+        algorithm::VariableNeighborhoodSearchAlgorithm vns(50, 5);
 
-        auto solution = hca.solve(problem);
+        auto solution = vns.solve(problem);
 
         double totalAllocationCost = 0.0;
         double totalFixedCost = 0.0;

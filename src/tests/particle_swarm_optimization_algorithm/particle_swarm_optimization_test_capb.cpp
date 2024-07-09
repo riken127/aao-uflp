@@ -5,7 +5,7 @@
 
 #include "../../misc/ORLibParser.hpp"
 #include "../../problem/Problem.hpp"
-#include "../../algorithms/HillClimbingAlgorithm.hpp"
+#include "../../algorithms/ParticleSwarmOptimizationAlgorithm.h"
 #define OPTIMAL_SOLUTION 12979071.58143
 
 bool isAlmostEqual(double a, double b, double epsilon = 1e-3)
@@ -18,11 +18,11 @@ int main()
     miscellaneous::ORLibParser parser;
     try
     {
-        Problem problem = parser.parse("../../../src/tests/FicheirosTeste/ORLIB/ORLIB-uncap/a-c/capb.txt");
-        
-        algorithm::HillClimbingAlgorithm hca;
+        Problem problem = parser.parse("../src/tests/FicheirosTeste/ORLIB/ORLIB-uncap/a-c/capb.txt");
 
-        auto solution = hca.solve(problem);
+        algorithm::ParticleSwarmOptimizationAlgorithm pso(25, 100, 0.4, 0.99, 0.99);
+
+        auto solution = pso.solve(problem);
 
         double totalAllocationCost = 0.0;
         double totalFixedCost = 0.0;

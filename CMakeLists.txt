@@ -16,6 +16,10 @@ add_library(algorithms
     src/algorithms/CrowSearchAlgorithm.hpp
     src/algorithms/SimulatedAnnealingAlgorithm.cpp
     src/algorithms/SimulatedAnnealingAlgorithm.hpp
+        src/algorithms/VariableNeighborhoodSearchAlgorithm.cpp
+        src/algorithms/VariableNeighborhoodSearchAlgorithm.h
+        src/algorithms/ParticleSwarmOptimizationAlgorithm.cpp
+        src/algorithms/ParticleSwarmOptimizationAlgorithm.h
 )
 
 add_library(misc 
@@ -62,6 +66,24 @@ add_executable(binary_crow_search_test_mr2 src/tests/binary_crow_search_algorith
 add_executable(binary_crow_search_test_mr3 src/tests/binary_crow_search_algorithm/binary_crow_search_test_mr3.cpp)
 add_executable(binary_crow_search_test_mr4 src/tests/binary_crow_search_algorithm/binary_crow_search_test_mr4.cpp)
 add_executable(binary_crow_search_test_mr5 src/tests/binary_crow_search_algorithm/binary_crow_search_test_mr5.cpp)
+
+add_executable(variable_neighborhood_search_test_capa src/tests/variable_neighborhood_search_algorithm/variable_neighborhood_search_test_capa.cpp)
+add_executable(variable_neighborhood_search_test_capb src/tests/variable_neighborhood_search_algorithm/variable_neighborhood_search_test_capb.cpp)
+add_executable(variable_neighborhood_search_test_capc src/tests/variable_neighborhood_search_algorithm/variable_neighborhood_search_test_capc.cpp)
+add_executable(variable_neighborhood_search_test_mr1 src/tests/variable_neighborhood_search_algorithm/variable_neighborhood_search_test_mr1.cpp)
+add_executable(variable_neighborhood_search_test_mr2 src/tests/variable_neighborhood_search_algorithm/variable_neighborhood_search_test_mr2.cpp)
+add_executable(variable_neighborhood_search_test_mr3 src/tests/variable_neighborhood_search_algorithm/variable_neighborhood_search_test_mr3.cpp)
+add_executable(variable_neighborhood_search_test_mr4 src/tests/variable_neighborhood_search_algorithm/variable_neighborhood_search_test_mr4.cpp)
+add_executable(variable_neighborhood_search_test_mr5 src/tests/variable_neighborhood_search_algorithm/variable_neighborhood_search_test_mr5.cpp)
+
+add_executable(particle_swarm_optimization_test_capa src/tests/particle_swarm_optimization_algorithm/particle_swarm_optimization_test_capa.cpp)
+add_executable(particle_swarm_optimization_test_capb src/tests/particle_swarm_optimization_algorithm/particle_swarm_optimization_test_capb.cpp)
+add_executable(particle_swarm_optimization_test_capc src/tests/particle_swarm_optimization_algorithm/particle_swarm_optimization_test_capc.cpp)
+add_executable(particle_swarm_optimization_test_mr1 src/tests/particle_swarm_optimization_algorithm/particle_swarm_optimization_test_mr1.cpp)
+add_executable(particle_swarm_optimization_test_mr2 src/tests/particle_swarm_optimization_algorithm/particle_swarm_optimization_test_mr2.cpp)
+add_executable(particle_swarm_optimization_test_mr3 src/tests/particle_swarm_optimization_algorithm/particle_swarm_optimization_test_mr3.cpp)
+add_executable(particle_swarm_optimization_test_mr4 src/tests/particle_swarm_optimization_algorithm/particle_swarm_optimization_test_mr4.cpp)
+add_executable(particle_swarm_optimization_test_mr5 src/tests/particle_swarm_optimization_algorithm/particle_swarm_optimization_test_mr5.cpp)
 
 # Link your algorithms library to the test executables
 # target_link_libraries(test_algorithm1 PRIVATE algorithms)
@@ -133,9 +155,81 @@ target_link_libraries(binary_crow_search_test_mr4 PRIVATE misc)
 target_link_libraries(binary_crow_search_test_mr5 PRIVATE algorithms)
 target_link_libraries(binary_crow_search_test_mr5 PRIVATE misc)
 
+target_link_libraries(variable_neighborhood_search_test_capa PRIVATE algorithms)
+target_link_libraries(variable_neighborhood_search_test_capa PRIVATE misc)
+target_link_libraries(variable_neighborhood_search_test_capb PRIVATE algorithms)
+target_link_libraries(variable_neighborhood_search_test_capb PRIVATE misc)
+target_link_libraries(variable_neighborhood_search_test_capc PRIVATE algorithms)
+target_link_libraries(variable_neighborhood_search_test_capc PRIVATE misc)
+target_link_libraries(variable_neighborhood_search_test_mr1 PRIVATE algorithms)
+target_link_libraries(variable_neighborhood_search_test_mr1 PRIVATE misc)
+target_link_libraries(variable_neighborhood_search_test_mr2 PRIVATE algorithms)
+target_link_libraries(variable_neighborhood_search_test_mr2 PRIVATE misc)
+target_link_libraries(variable_neighborhood_search_test_mr3 PRIVATE algorithms)
+target_link_libraries(variable_neighborhood_search_test_mr3 PRIVATE misc)
+target_link_libraries(variable_neighborhood_search_test_mr4 PRIVATE algorithms)
+target_link_libraries(variable_neighborhood_search_test_mr4 PRIVATE misc)
+target_link_libraries(variable_neighborhood_search_test_mr5 PRIVATE algorithms)
+target_link_libraries(variable_neighborhood_search_test_mr5 PRIVATE misc)
+
+target_link_libraries(particle_swarm_optimization_test_capa PRIVATE algorithms)
+target_link_libraries(particle_swarm_optimization_test_capa PRIVATE misc)
+target_link_libraries(particle_swarm_optimization_test_capb PRIVATE algorithms)
+target_link_libraries(particle_swarm_optimization_test_capb PRIVATE misc)
+target_link_libraries(particle_swarm_optimization_test_capc PRIVATE algorithms)
+target_link_libraries(particle_swarm_optimization_test_capc PRIVATE misc)
+target_link_libraries(particle_swarm_optimization_test_mr1 PRIVATE algorithms)
+target_link_libraries(particle_swarm_optimization_test_mr1 PRIVATE misc)
+target_link_libraries(particle_swarm_optimization_test_mr2 PRIVATE algorithms)
+target_link_libraries(particle_swarm_optimization_test_mr2 PRIVATE misc)
+target_link_libraries(particle_swarm_optimization_test_mr3 PRIVATE algorithms)
+target_link_libraries(particle_swarm_optimization_test_mr3 PRIVATE misc)
+target_link_libraries(particle_swarm_optimization_test_mr4 PRIVATE algorithms)
+target_link_libraries(particle_swarm_optimization_test_mr4 PRIVATE misc)
+target_link_libraries(particle_swarm_optimization_test_mr5 PRIVATE algorithms)
+target_link_libraries(particle_swarm_optimization_test_mr5 PRIVATE misc)
+
 # Link more test executables as needed
 enable_testing()
+
 # Register tests with CTest
+
+
+add_test(NAME VariableNeighborhoodSearchTestCapA
+        COMMAND variable_neighborhood_search_test_capa)
+add_test(NAME VariableNeighborhoodSearchTestCapB
+        COMMAND variable_neighborhood_search_test_capb)
+add_test(NAME VariableNeighborhoodSearchTestCapC
+        COMMAND variable_neighborhood_search_test_capc)
+add_test(NAME VariableNeighborhoodSearchTestMr1
+        COMMAND variable_neighborhood_search_test_mr1)
+add_test(NAME VariableNeighborhoodSearchTestMr2
+        COMMAND variable_neighborhood_search_test_mr2)
+add_test(NAME VariableNeighborhoodSearchTestMr3
+        COMMAND variable_neighborhood_search_test_mr3)
+add_test(NAME VariableNeighborhoodSearchTestMr4
+        COMMAND variable_neighborhood_search_test_mr4)
+add_test(NAME VariableNeighborhoodSearchTestMr5
+        COMMAND variable_neighborhood_search_test_mr5)
+#add_test(NAME TestAlgorithm2 COMMAND test_algorithm2)
+# Add more tests as needed
+add_test(NAME ParticleSwarmOptimizationTestCapA
+        COMMAND particle_swarm_optimization_test_capa)
+add_test(NAME ParticleSwarmOptimizationTestCapB
+        COMMAND particle_swarm_optimization_test_capb)
+add_test(NAME ParticleSwarmOptimizationTestCapC
+        COMMAND particle_swarm_optimization_test_capc)
+add_test(NAME ParticleSwarmOptimizationTestMr1
+        COMMAND particle_swarm_optimization_test_mr1)
+add_test(NAME ParticleSwarmOptimizationTestMr2
+        COMMAND particle_swarm_optimization_test_mr2)
+add_test(NAME ParticleSwarmOptimizationTestMr3
+        COMMAND particle_swarm_optimization_test_mr3)
+add_test(NAME ParticleSwarmOptimizationTestMr4
+        COMMAND particle_swarm_optimization_test_mr4)
+add_test(NAME ParticleSwarmOptimizationTestMr5
+        COMMAND particle_swarm_optimization_test_mr5)
+
 add_test(NAME GRASPAlgorithmTestCapA
          COMMAND GRASP_algorithm_test_capa)
 add_test(NAME GRASPAlgorithmTestCapB
@@ -203,9 +297,6 @@ add_test(NAME BinaryCrowSearchTestMr4
         COMMAND binary_crow_search_test_mr4)
 add_test(NAME BinaryCrowSearchTestMr5
         COMMAND binary_crow_search_test_mr5)
-
-#add_test(NAME TestAlgorithm2 COMMAND test_algorithm2)
-# Add more tests as needed
 
 # Set source and build directories
 set(SOURCE_DIR "${CMAKE_SOURCE_DIR}/src")
