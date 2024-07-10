@@ -13,7 +13,7 @@ namespace miscellaneous
         struct GeneralLogEntry
         {
             std::string algorithm;
-            int iteration;
+            unsigned long long iteration;
             unsigned long long num_comparisons;
             int facility_id;
             int customer_id;
@@ -24,7 +24,7 @@ namespace miscellaneous
 
         struct CrowSearchLogEntry
         {
-            int iteration;
+            unsigned long long iteration;
             int crow_index;
             double obj_value;
             std::vector<bool> position;
@@ -33,7 +33,7 @@ namespace miscellaneous
 
         struct GRASPLogEntry
         {
-            int iteration;
+            unsigned long long iteration;
             double current_obj;
             double best_cost;
             std::vector<bool> warehouse_open;
@@ -44,7 +44,8 @@ namespace miscellaneous
 
         struct HillClimbingLogEntry
         {
-            int iteration;
+            unsigned long long iteration;
+            unsigned long long comparisons;
             double current_cost;
             std::vector<bool> open_warehouses;
             double elapsed_time;
@@ -52,11 +53,10 @@ namespace miscellaneous
 
         struct SimulatedAnnealingLogEntry
         {
-            int iteration;
+            unsigned long long iteration;
             double temperature;
             double current_cost;
             double new_cost;
-            double best_cost;
             double delta_cost;
         };
 
@@ -64,17 +64,16 @@ namespace miscellaneous
                         const std::string& problem_name);
         ~AlgorithmLogger();
 
-        void logGeneral(int iteration, unsigned long long num_comparisons,
+        void logGeneral(unsigned long long iteration, unsigned long long num_comparisons,
                         int facility_id, int customer_id, int open_facility, double cost, double assignment_cost);
-        void logCrowSearch(int iteration, int crow_index, double obj_value, const std::vector<bool>& position,
+        void logCrowSearch(unsigned long long iteration, int crow_index, double obj_value, const std::vector<bool>& position,
                            bool awareness);
-        void logGRASP(int iteration, double current_obj, double best_cost, const std::vector<bool>& warehouse_open,
+        void logGRASP(unsigned long long iteration, double current_obj, double best_cost, const std::vector<bool>& warehouse_open,
                       const std::vector<int>& best_assignment, double total_cost,
                       const std::vector<double>& customer_costs);
-        void logHillClimbing(int iteration, double current_cost, const std::vector<bool>& open_warehouses,
+        void logHillClimbing(unsigned long long iteration, unsigned long long comparisons, double current_cost, const std::vector<bool>& open_warehouses,
                              double elapsed_time);
-        void logSimulatedAnnealing(int iteration, double temperature, double current_cost, double new_cost,
-                                   double best_cost, double delta_cost);
+        void logSimulatedAnnealing(unsigned long long iteration, double temperature, double current_cost, double new_cost, double delta_cost);
 
         void saveGeneralLogToFile();
         void saveCrowSearchLogToFile();

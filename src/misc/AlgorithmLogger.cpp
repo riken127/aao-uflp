@@ -23,7 +23,7 @@ namespace miscellaneous
         }
     }
 
-    void AlgorithmLogger::logGeneral(int iteration, unsigned long long num_comparisons,
+    void AlgorithmLogger::logGeneral(unsigned long long iteration, unsigned long long num_comparisons,
                                      int facility_id, int customer_id, int open_facility, double cost,
                                      double assignment_cost)
     {
@@ -39,7 +39,7 @@ namespace miscellaneous
         });
     }
 
-    void AlgorithmLogger::logCrowSearch(int iteration, int crow_index, double obj_value,
+    void AlgorithmLogger::logCrowSearch(unsigned long long iteration, int crow_index, double obj_value,
                                         const std::vector<bool>& position, bool awareness)
     {
         crow_search_log_entries.push_back({
@@ -51,7 +51,7 @@ namespace miscellaneous
         });
     }
 
-    void AlgorithmLogger::logGRASP(int iteration, double current_obj, double best_cost,
+    void AlgorithmLogger::logGRASP(unsigned long long iteration, double current_obj, double best_cost,
                                    const std::vector<bool>& warehouse_open,
                                    const std::vector<int>& best_assignment, double total_cost,
                                    const std::vector<double>& customer_costs)
@@ -67,26 +67,26 @@ namespace miscellaneous
         });
     }
 
-    void AlgorithmLogger::logHillClimbing(int iteration, double current_cost, const std::vector<bool>& open_warehouses,
+    void AlgorithmLogger::logHillClimbing(unsigned long long iteration, unsigned long long comparisons, double current_cost, const std::vector<bool>& open_warehouses,
                                           double elapsed_time)
     {
         hill_climbing_log_entries.push_back({
             iteration,
+            comparisons,
             current_cost,
             open_warehouses,
             elapsed_time
         });
     }
 
-    void AlgorithmLogger::logSimulatedAnnealing(int iteration, double temperature, double current_cost, double new_cost,
-                                                double best_cost, double delta_cost)
+    void AlgorithmLogger::logSimulatedAnnealing(unsigned long long iteration, double temperature, double current_cost, double new_cost,
+                                                double delta_cost)
     {
         simulated_annealing_log_entries.push_back({
             iteration,
             temperature,
             current_cost,
             new_cost,
-            best_cost,
             delta_cost
         });
     }
@@ -152,10 +152,10 @@ namespace miscellaneous
     void AlgorithmLogger::saveHillClimbingLogToFile()
     {
         std::ofstream hill_climbing_file("hill_climbing_" + problem + ".csv");
-        hill_climbing_file << "Problem,Iteration,Current_Cost,Open_Warehouses,Elapsed_Time\n";
+        hill_climbing_file << "Problem,Iteration,Comparisons,Current_Cost,Open_Warehouses,Elapsed_Time\n";
         for (const auto& log : hill_climbing_log_entries)
         {
-            hill_climbing_file << problem << "," << log.iteration << "," << log.current_cost << ",\"";
+            hill_climbing_file << problem << "," << log.iteration << "," << log.comparisons << "," << log.current_cost << ",\"";
             for (bool open : log.open_warehouses)
             {
                 hill_climbing_file << open << " ";
@@ -172,7 +172,7 @@ namespace miscellaneous
         for (const auto& entry : simulated_annealing_log_entries)
         {
             sa_file << problem << "," << entry.iteration << "," << entry.temperature << ","
-                << entry.current_cost << "," << entry.new_cost << "," << entry.best_cost << "," << entry.delta_cost <<
+                << entry.current_cost << "," << entry.new_cost << "," << entry.delta_cost <<
                 "\n";
         }
         sa_file.close();

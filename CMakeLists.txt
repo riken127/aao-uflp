@@ -24,6 +24,8 @@ add_library(misc
     src/misc/ORLibParser.cpp
     src/misc/MParser.hpp
     src/misc/MParser.cpp
+        src/misc/AlgorithmLogger.cpp
+        src/misc/AlgorithmLogger.h
 )
 
 # Add executable targets for your tests

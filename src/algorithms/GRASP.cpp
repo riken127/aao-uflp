@@ -16,8 +16,8 @@ namespace algorithm
      * @param num_iterations_local Number of iterations for the local search heuristic.
      * @param alpha Parameter for the greedy randomized constructive phase.
      */
-    GRASP::GRASP(double alpha)
-        : alpha(alpha) {}
+    GRASP::GRASP(double alpha, miscellaneous::AlgorithmLogger& logger)
+        : alpha(alpha), logger(logger) {}
 
     /**
      * @brief Initializes the GRASP algorithm with the given problem.
@@ -35,14 +35,20 @@ namespace algorithm
         allocation_costs.resize(number_of_warehouses, std::vector<double>(number_of_customers));
 
         for (int i = 0; i < number_of_warehouses; ++i){
+            comparisons++;
             fixed_costs[i] = problem.getWarehouses()[i].getFixedCost();
         }
+        comparisons++;
 
         for (int j = 0; j < number_of_customers; ++j){
+            comparisons++;
             for (int i = 0; i < number_of_warehouses; ++i){
+                comparisons++;
                 allocation_costs[i][j] = problem.getCustomers()[j].getAllocationCosts()[i];
             }
+            comparisons++;
         }
+        comparisons++;
 
         best_assignment.resize(number_of_customers);
         warehouse_open.resize(number_of_warehouses, false);
@@ -62,33 +68,45 @@ namespace algorithm
         std::vector<int> best_assignment_temp(number_of_customers, -1);
 
         for (int j = 0; j < number_of_customers; ++j){
+            comparisons++;
             double assign_cost = MAX_DOUBLE;
             int best_warehouse = -1;
 
             for (int i = 0; i < number_of_warehouses; ++i){
+                comparisons++;
+                comparisons++;
                 if (warehouse_open[i] && allocation_costs[i][j] < assign_cost){
+                    comparisons++;
                     assign_cost = allocation_costs[i][j];
                     best_warehouse = i;
                 }
             }
+            comparisons++;
             customer_min_cost[j] = assign_cost;
             best_assignment_temp[j] = best_warehouse;
         }
+        comparisons++;
 
         double cost = 0;
 
         for (int i = 0; i < number_of_warehouses; ++i){
+            comparisons++;
+            comparisons++;
             if (warehouse_open[i]){
                 cost += fixed_costs[i];
             }
         }
+        comparisons++;
 
         for (int j = 0; j < number_of_customers; ++j){
+            comparisons++;
+            comparisons++;
             if (best_assignment_temp[j] != -1){
                 cost += customer_min_cost[j];
                 customer_assignment[j] = best_assignment_temp[j];
             }
         }
+        comparisons++;
 
         return cost;
     }
@@ -106,10 +124,13 @@ namespace algorithm
         int best_warehouse = -1;
 
         for (int i = 0; i < number_of_warehouses; ++i){
+            comparisons++;
+            comparisons++;
             if (warehouse_open[i]){
                 warehouse_open[i] = false;
                 double cost = ReassignCustomers();
 
+                comparisons++;
                 if (cost < current_objective){
                     current_objective = cost;
                     best_warehouse = i;
@@ -118,7 +139,8 @@ namespace algorithm
                 warehouse_open[i] = true;
             }
         }
-
+        comparisons++;
+        comparisons++;
         if (best_warehouse != -1){
             warehouse_open[best_warehouse] = false;
             return true;
@@ -140,10 +162,12 @@ namespace algorithm
         int best_warehouse = -1;
 
         for (int i = 0; i < number_of_warehouses; ++i){
+            comparisons++;
+            comparisons++;
             if (!warehouse_open[i]){
                 warehouse_open[i] = true;
                 double cost = ReassignCustomers();
-
+                comparisons++;
                 if (cost < current_objective){
                     current_objective = cost;
                     best_warehouse = i;
@@ -153,6 +177,7 @@ namespace algorithm
             }
         }
 
+        comparisons++;
         if (best_warehouse != -1){
             warehouse_open[best_warehouse] = true;
             return true;
@@ -175,13 +200,18 @@ namespace algorithm
         int best_closed = -1;
 
         for (int i1 = 0; i1 < number_of_warehouses; ++i1){
+            comparisons++;
+            comparisons++;
             if (!warehouse_open[i1]){
                 for (int i2 = 0; i2 < number_of_warehouses; ++i2){
+                    comparisons++;
+                    comparisons++;
                     if (warehouse_open[i2]){
                         warehouse_open[i1] = true;
                         warehouse_open[i2] = false;
                         double cost = ReassignCustomers();
 
+                        comparisons++;
                         if (cost < current_objective){
                             current_objective = cost;
                             best_open = i1;
@@ -191,11 +221,15 @@ namespace algorithm
                         warehouse_open[i1] = false;
                         warehouse_open[i2] = true;
                     }
+                    comparisons++;
                 }
             }
         }
+        comparisons++;
 
+        comparisons++;
         if (best_open != -1 && best_closed != -1){
+            comparisons++;
             warehouse_open[best_open] = true;
             warehouse_open[best_closed] = false;
             return true;
@@ -214,31 +248,65 @@ namespace algorithm
      * open-close warehouses to reduce the objective cost. The search stops if no improvement is found
      * or the maximum number of local iterations is reached.
      */
-    double GRASP::LocalSearchHeuristic(double objective){
+    double GRASP::LocalSearchHeuristic(double objective, const Problem& problem){
         current_objective = objective;
         bool improved = true;
         int iterations = 0;
 
         while (improved){
+            comparisons++;
+            iteration++;
             improved = false;
 
+            comparisons++;
             if (CloseWarehouse()){
                 improved = true;
                 current_objective = ReassignCustomers();
             }
 
+            comparisons++;
             if (!improved && OpenWarehouse()){
+                comparisons++;
                 improved = true;
                 current_objective = ReassignCustomers();
             }
 
+            comparisons++;
             if (!improved && OpenCloseWarehouse()){
+                comparisons++;
                 improved = true;
                 current_objective = ReassignCustomers();
             }
+
+            std::vector<double> customer_costs;
+            double total_curr_cost = 0;
+            double assign_cost = 0;
+            minimum_cost = 0;
+
+            for(int i = 0; i < problem.getNumberOfCustomers(); i++)
+            {
+                customer_costs.push_back(problem.getCustomers()[i].getAllocationCosts()[customer_assignment[i]]);
+                total_curr_cost += customer_costs[i];
+                minimum_cost += problem.getCustomers()[i].getAllocationCosts()[best_assignment[i]];
+            }
+
+            assign_cost = total_curr_cost;
+
+            for (int i = 0; i < problem.getNumberOfWarehouses(); i++)
+            {
+                if (warehouse_open[i])
+                {
+                    total_curr_cost += problem.getWarehouses()[i].getFixedCost();
+                    minimum_cost += problem.getWarehouses()[i].getFixedCost();
+                }
+            }
+
+            logger.logGRASP(iterations, current_objective, minimum_cost, warehouse_open, best_assignment, total_curr_cost, customer_costs);
+            logger.logGeneral(iteration, comparisons, -1, -1, -1, total_curr_cost, assign_cost);
 
             iterations++;
         }
+
 
         current_objective = ReassignCustomers();
 
@@ -261,6 +329,7 @@ namespace algorithm
         std::fill(best_assignment.begin(), best_assignment.end(), -1);
 
         while (true){
+            comparisons++;
             int best_warehouse = -1;
             double imp_cost = best_cost;
             std::vector<int> restricted_candidate_list;
@@ -271,6 +340,8 @@ namespace algorithm
             std::vector<std::thread> threads;
 
             for (int i = 0; i < number_of_warehouses; ++i){
+                comparisons++;
+                comparisons++;
                 if (!warehouse_open[i]){
                     threads.push_back(std::thread([&, i]{
                         warehouse_open[i] = true;
@@ -281,6 +352,7 @@ namespace algorithm
                         }));
                 }
             }
+            comparisons++;
 
             for (auto &th : threads){
                 if (th.joinable()){
@@ -289,7 +361,11 @@ namespace algorithm
             }
 
             for (int i = 0; i < number_of_warehouses; ++i){
+                comparisons++;
+                comparisons++;
                 if (is_open[i]){
+                    comparisons++;
+                    comparisons++;
                     if (costs[i] < min_cost)
                         min_cost = costs[i];
                     if (costs[i] > max_cost)
@@ -298,13 +374,17 @@ namespace algorithm
             }
 
             double threshold = min_cost + alpha * (max_cost - min_cost);
-
+            minimum_cost = min_cost;
             for (int i = 0; i < number_of_warehouses; ++i){
+                comparisons++;
+                comparisons++;
                 if (is_open[i] && costs[i] <= threshold){
+                    comparisons++;
                     restricted_candidate_list.push_back(i);
                 }
             }
 
+            comparisons++;
             if (restricted_candidate_list.empty())
                 break;
 
@@ -314,8 +394,10 @@ namespace algorithm
             best_cost = ReassignCustomers();
 
             for (int j = 0; j < number_of_customers; ++j){
+                comparisons++;
                 best_assignment[j] = customer_assignment[j];
             }
+            comparisons++;
         }
 
         return best_cost;
@@ -336,14 +418,17 @@ namespace algorithm
 
         double best_cost = MAX_DOUBLE;
         double cost = GreedyRandomizedConstructive();
-        cost = LocalSearchHeuristic(cost);
+        cost = LocalSearchHeuristic(cost, problem);
 
+        comparisons++;
         if (cost < best_cost){
             best_cost = cost;
 
             for (int j = 0; j < number_of_customers; ++j){
+                comparisons++;
                 best_assignment[j] = customer_assignment[j];
             }
+            comparisons++;
         }
 
         warehouse_open = best_warehouse_open;
@@ -358,6 +443,8 @@ namespace algorithm
             result.push_back({i, best_assignment[i]});
         }
 
+        logger.saveGRASPLogToFile();
+        logger.saveGeneralLogToFile();
         return result;
     }
 }

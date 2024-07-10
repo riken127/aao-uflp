@@ -6,6 +6,8 @@
 #define SIMULATEDANNEALINGALGORITHM_H
 #include <vector>
 #include <random>
+
+#include "../misc/AlgorithmLogger.h"
 #include "../problem/Problem.hpp"
 class Problem;
 namespace algorithm {
@@ -17,8 +19,8 @@ namespace algorithm {
                 double total_cost = 0.0;
             };
 
-            SimulatedAnnealingAlgorithm(double initial_temperature, double final_temperature, double cooling_rate, int iterations_per_temp)
-                : initial_temperature(initial_temperature), final_temperature(final_temperature), cooling_rate(cooling_rate), iterations_per_temp(iterations_per_temp) {}
+            SimulatedAnnealingAlgorithm(double initial_temperature, double final_temperature, double cooling_rate, int iterations_per_temp, miscellaneous::AlgorithmLogger& logger)
+                : initial_temperature(initial_temperature), final_temperature(final_temperature), cooling_rate(cooling_rate), iterations_per_temp(iterations_per_temp), logger(logger) {}
 
             std::vector<std::pair<int, int>> solve(const Problem& problem) const;
 
@@ -28,6 +30,11 @@ namespace algorithm {
             void localSearch(Solution& solution, const Problem& problem, int tabu_tenure) const;
             Solution adaptivePerturbation(const Solution& current_solution, const Problem& problem, int iteration) const;
 
+            mutable unsigned long long curr_iteration = 0;
+            mutable unsigned long long num_comparisons = 0;
+            mutable double curr_temp = 0;
+            mutable double curr_delta = 0;
+            miscellaneous::AlgorithmLogger& logger;
             double initial_temperature;
             double final_temperature;
             double cooling_rate;
@@ -52,7 +59,4 @@ namespace algorithm {
             std::uniform_real_distribution<double> dist;
         };
     }
-
-
-
 #endif //SIMULATEDANNEALINGALGORITHM_H
