@@ -17,8 +17,8 @@ int main() {
 	try {
 		Problem problem = parser.parse("../../../src/tests/FicheirosTeste/M/Kcapmo2.txt");
         
-        algorithm::HillClimbingAlgorithm hca;
-
+        miscellaneous::AlgorithmLogger logger("hill_climbing_test.txt","HillClimbing","mo2");
+		algorithm::HillClimbingAlgorithm hca(logger);
         auto solution = hca.solve(problem);
 
 		double totalAllocationCost = 0.0;

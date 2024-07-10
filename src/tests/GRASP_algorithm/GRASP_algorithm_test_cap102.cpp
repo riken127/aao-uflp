@@ -16,7 +16,8 @@ int main() {
 	try {
 		Problem problem = parser.parse("../../../src/tests/FicheirosTeste/ORLIB/ORLIB-uncap/100/cap102.txt");
         double alpha = 0.1;
-		algorithm::GRASP grasp(alpha);
+		miscellaneous::AlgorithmLogger logger("GRASP_test.txt","GRASP","cap102");
+		algorithm::GRASP grasp(alpha,logger);
 
 		auto solution = grasp.solve(problem);
 

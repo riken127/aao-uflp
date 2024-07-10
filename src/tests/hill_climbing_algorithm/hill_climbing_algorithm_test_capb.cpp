@@ -21,7 +21,8 @@ int main()
         Problem problem = parser.parse("../../../src/tests/FicheirosTeste/ORLIB/ORLIB-uncap/a-c/capb.txt");
         
         int alpha = 0.1; 
-        algorithm::HillClimbingAlgorithm hca;
+        miscellaneous::AlgorithmLogger logger("hill_climbing_test.txt","HillClimbing","capb");
+		algorithm::HillClimbingAlgorithm hca(logger);
 
         auto solution = hca.solve(problem);
 

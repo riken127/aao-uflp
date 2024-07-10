@@ -21,8 +21,9 @@ int main()
 		Problem problem = parser.parse("../../../src/tests/FicheirosTeste/M/Kcapmr3.txt");
 
         double alpha = 0.5;
-		auto algo = algorithm::GRASP(alpha);
-		auto solution = algo.solve(problem);
+		miscellaneous::AlgorithmLogger logger("GRASP_test.txt","GRASP","mr3");
+		algorithm::GRASP grasp(alpha,logger);
+		auto solution = grasp.solve(problem);
 
 		double totalAllocationCost = 0.0;
 		double totalFixedCost = 0.0;

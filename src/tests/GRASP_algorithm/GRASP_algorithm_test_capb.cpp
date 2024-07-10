@@ -21,7 +21,8 @@ int main()
         Problem problem = parser.parse("../../../src/tests/FicheirosTeste/ORLIB/ORLIB-uncap/a-c/capb.txt");
         
         double alpha = 0.1; 
-        algorithm::GRASP grasp(alpha);
+        miscellaneous::AlgorithmLogger logger("GRASP_test.txt","GRASP","capb");
+		algorithm::GRASP grasp(alpha,logger);
 
         auto solution = grasp.solve(problem);
 

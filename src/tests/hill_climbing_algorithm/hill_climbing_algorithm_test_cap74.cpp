@@ -15,7 +15,8 @@ int main() {
 	miscellaneous::ORLibParser parser;
 	try {
 		Problem problem = parser.parse("../../../src/tests/FicheirosTeste/ORLIB/ORLIB-uncap/70/cap74.txt");
-		algorithm::HillClimbingAlgorithm hca;
+		miscellaneous::AlgorithmLogger logger("hill_climbing_test.txt","HillClimbing","cap74");
+		algorithm::HillClimbingAlgorithm hca(logger);
 
 		auto solution = hca.solve(problem);
 

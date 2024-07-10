@@ -17,7 +17,8 @@ int main() {
 	try {
 		Problem problem = parser.parse("../../../src/tests/FicheirosTeste/M/Kcapmq5.txt");
         
-        algorithm::HillClimbingAlgorithm hca;
+        miscellaneous::AlgorithmLogger logger("hill_climbing_test.txt","HillClimbing","mq5");
+		algorithm::HillClimbingAlgorithm hca(logger);
 
         auto solution = hca.solve(problem);
 

@@ -15,7 +15,8 @@ int main() {
 	try {
 		Problem problem = parser.parse("../../../src/tests/FicheirosTeste/ORLIB/ORLIB-uncap/a-c/capc.txt");
 
-		algorithm::CrowSearchAlgorithm csa(400, 0.1, 840000);
+		miscellaneous::AlgorithmLogger logger("binary_crow_search_test.txt","CrowSearch","capc");
+		algorithm::CrowSearchAlgorithm csa(400, 0.1, 80000,logger);
 
 		auto solution = csa.solve(problem);
 

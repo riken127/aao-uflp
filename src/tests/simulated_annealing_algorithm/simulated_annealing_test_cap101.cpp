@@ -16,8 +16,9 @@ int main() {
     miscellaneous::ORLibParser parser;
     try {
         Problem problem = parser.parse("../../../src/tests/FicheirosTeste/ORLIB/ORLIB-uncap/100/cap101.txt");
+        miscellaneous::AlgorithmLogger logger("simulated_annealing_test.txt","SimulatedAnnealing","cap101");
         algorithm::SimulatedAnnealingAlgorithm simulated_annealing_algorithm(1000
-            , 0.1, 0.9, 200);
+            , 0.1, 0.9, 200,logger);
 
         auto solution = simulated_annealing_algorithm.solve(problem);
 

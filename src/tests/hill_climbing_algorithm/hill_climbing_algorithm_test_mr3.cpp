@@ -20,7 +20,8 @@ int main()
 	{
 		Problem problem = parser.parse("../../../src/tests/FicheirosTeste/M/Kcapmr3.txt");
 
-        algorithm::HillClimbingAlgorithm hca;
+        miscellaneous::AlgorithmLogger logger("hill_climbing_test.txt","HillClimbing","mr3");
+		algorithm::HillClimbingAlgorithm hca(logger);
 
         auto solution = hca.solve(problem);
 

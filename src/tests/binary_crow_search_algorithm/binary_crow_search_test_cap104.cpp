@@ -15,7 +15,8 @@ int main() {
 	miscellaneous::ORLibParser parser;
 	try {
 		Problem problem = parser.parse("../../../src/tests/FicheirosTeste/ORLIB/ORLIB-uncap/100/cap104.txt");
-		algorithm::CrowSearchAlgorithm csa(400, 0.1, 80000);
+		miscellaneous::AlgorithmLogger logger("binary_crow_search_test.txt","CrowSearch","cap104");
+		algorithm::CrowSearchAlgorithm csa(400, 0.1, 80000,logger);
 
 		auto solution = csa.solve(problem);
 

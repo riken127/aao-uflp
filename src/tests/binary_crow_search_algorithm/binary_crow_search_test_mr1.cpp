@@ -17,7 +17,8 @@ int main() {
 	try {
 		Problem problem = parser.parse("../../../src/tests/FicheirosTeste/M/Kcapmr1.txt");
 		
-		algorithm::CrowSearchAlgorithm csa(400, 0.1, 84000);
+		miscellaneous::AlgorithmLogger logger("binary_crow_search_test.txt","CrowSearch","mr1");
+		algorithm::CrowSearchAlgorithm csa(400, 0.1, 80000,logger);
 
 		auto solution = csa.solve(problem);
 

@@ -17,7 +17,8 @@ int main() {
 		Problem problem = parser.parse("../../../src/tests/FicheirosTeste/M/Kcapmr5.txt");
         
         double alpha = 0.1; 
-        algorithm::GRASP grasp(alpha);
+        miscellaneous::AlgorithmLogger logger("GRASP_test.txt","GRASP","mr5");
+		algorithm::GRASP grasp(alpha,logger);
 
         auto solution = grasp.solve(problem);
 
