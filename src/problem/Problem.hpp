@@ -1,7 +1,12 @@
-
 #pragma once
+
+// Maintainer: riken127 <henriquenoronha05@gmail.com>
+
 #include "Warehouse.hpp"
 #include "Customer.hpp"
+
+#include <utility>
+#include <vector>
 
 /**
  * @brief Represents a UFL Problem instance.
@@ -10,15 +15,32 @@
  */
 class Problem {
 public:
-    Problem() : num_customers(0), num_warehouses(0) {} // Default constructor
-    Problem(int num_cust, int num_wh) : num_customers(num_cust), num_warehouses(num_wh) {}
+    Problem() = default;
+
+    Problem(int num_cust, int num_wh) : num_customers(num_cust), num_warehouses(num_wh) {
+        customers.reserve(static_cast<std::size_t>(num_customers));
+        warehouses.reserve(static_cast<std::size_t>(num_warehouses));
+    }
 
     void addWarehouse(const Warehouse& wh) {
         warehouses.push_back(wh);
     }
 
+    void addWarehouse(Warehouse&& wh) {
+        warehouses.push_back(std::move(wh));
+    }
+
     void addCustomer(const Customer& cust) {
         customers.push_back(cust);
+    }
+
+    void addCustomer(Customer&& cust) {
+        customers.push_back(std::move(cust));
+    }
+
+    void reserveStorage() {
+        customers.reserve(static_cast<std::size_t>(num_customers));
+        warehouses.reserve(static_cast<std::size_t>(num_warehouses));
     }
 
     int getNumberOfCustomers() const {
@@ -36,9 +58,9 @@ public:
     const std::vector<Customer>& getCustomers() const {
         return customers;
     }
-    int num_customers;
-    int num_warehouses;
+
+    int num_customers = 0;
+    int num_warehouses = 0;
     std::vector<Warehouse> warehouses;
     std::vector<Customer> customers;
-
 };

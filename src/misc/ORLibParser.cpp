@@ -1,8 +1,11 @@
+// Maintainer: riken127 <henriquenoronha05@gmail.com>
+
 #include "ORLibParser.hpp"
 #include "../problem/Problem.hpp"
+
 #include <fstream>
-#include <sstream>
-#include <iostream>
+#include <stdexcept>
+#include <utility>
 #include <vector>
 
 Problem miscellaneous::ORLibParser::parse(const std::string& path) const {
@@ -17,6 +20,7 @@ Problem miscellaneous::ORLibParser::parse(const std::string& path) const {
         throw std::runtime_error("Error reading number of warehouses and customers");
     }
 
+    problem.reserveStorage();
 
     for (int i = 0; i < problem.num_warehouses; ++i) {
         int capacity;
@@ -24,7 +28,7 @@ Problem miscellaneous::ORLibParser::parse(const std::string& path) const {
         if (!(file >> capacity >> fixed_cost)) {
             throw std::runtime_error("Error reading warehouse data");
         }
-        problem.warehouses.emplace_back(capacity, fixed_cost);
+        problem.addWarehouse(Warehouse{capacity, fixed_cost});
     }
 
     for (int i = 0; i < problem.num_customers; ++i) {
@@ -40,7 +44,7 @@ Problem miscellaneous::ORLibParser::parse(const std::string& path) const {
             }
         }
 
-        problem.customers.emplace_back(demand, allocation_costs);
+        problem.addCustomer(Customer{demand, std::move(allocation_costs)});
     }
 
     return problem;

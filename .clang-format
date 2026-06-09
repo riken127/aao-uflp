@@ -1,0 +1,10 @@
+# Maintainer: riken127 <henriquenoronha05@gmail.com>
+
+BasedOnStyle: LLVM
+IndentWidth: 4
+ColumnLimit: 120
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+DerivePointerAlignment: false
+PointerAlignment: Left
+SortIncludes: true

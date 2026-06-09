@@ -1,176 +1,231 @@
+// Maintainer: riken127 <henriquenoronha05@gmail.com>
+
 #include "SimulatedAnnealingAlgorithm.hpp"
+
 #include <algorithm>
-#include <iostream>
-#include <unordered_set>
+#include <cmath>
+#include <limits>
+#include <numeric>
+#include <utility>
 
-/**
- * Calculates the total cost of the given assignment.
- */
-double algorithm::SimulatedAnnealingAlgorithm::calculateCost(const std::vector<int>& assignment, const Problem& problem) const {
-    double total_cost = 0.0;
-    const auto& warehouses = problem.getWarehouses();
+namespace algorithm {
+namespace {
+
+constexpr double kInfinity = std::numeric_limits<double>::infinity();
+
+std::vector<int> buildGreedyAssignment(const Problem& problem) {
     const auto& customers = problem.getCustomers();
-    std::vector<bool> facilities_open(warehouses.size(), false);
+    const int numCustomers = problem.getNumberOfCustomers();
+    const int numWarehouses = problem.getNumberOfWarehouses();
+    std::vector<int> assignment(static_cast<std::size_t>(numCustomers), -1);
 
-    for (int j = 0; j < assignment.size(); ++j) {
-        int warehouse_index = assignment[j];
-        total_cost += customers[j].getAllocationCosts()[warehouse_index];
-        if (!facilities_open[warehouse_index]) {
-            total_cost += warehouses[warehouse_index].getFixedCost();
-            facilities_open[warehouse_index] = true;
+    for (int customer = 0; customer < numCustomers; ++customer) {
+        const auto& allocationCosts = customers[static_cast<std::size_t>(customer)].getAllocationCosts();
+        int bestWarehouse = 0;
+        double bestCost = allocationCosts.front();
+
+        for (int warehouse = 1; warehouse < numWarehouses; ++warehouse) {
+            if (allocationCosts[static_cast<std::size_t>(warehouse)] < bestCost) {
+                bestCost = allocationCosts[static_cast<std::size_t>(warehouse)];
+                bestWarehouse = warehouse;
+            }
         }
+
+        assignment[static_cast<std::size_t>(customer)] = bestWarehouse;
     }
 
-    return total_cost;
+    return assignment;
 }
 
-/**
- * Generates a neighboring solution by randomly perturbing a small subset of the current solution.
- */
-algorithm::SimulatedAnnealingAlgorithm::Solution algorithm::SimulatedAnnealingAlgorithm::generateNeighbor(const Solution& current_solution, const Problem& problem) const {
-    RandomGenerator random;
-    Solution new_solution = current_solution;
+} // namespace
 
-    int num_perturbations = std::min(problem.getNumberOfCustomers() / 10, 25);
-    std::unordered_set<int> perturbed_customers;
-    while (perturbed_customers.size() < num_perturbations) {
-        perturbed_customers.insert(random.getRandomInt(problem.getNumberOfCustomers()));
-    }
-
-    for (int client : perturbed_customers) {
-        new_solution.assignment[client] = random.getRandomInt(problem.getNumberOfWarehouses());
-    }
-
-    localSearch(new_solution, problem, 6);
-    return new_solution;
+double SimulatedAnnealingAlgorithm::randomUnit() const {
+    std::uniform_real_distribution<double> distribution(0.0, 1.0);
+    return distribution(rng);
 }
 
-/**
- * Performs a local search to refine the given solution using a tabu list to avoid cycles.
- */
-void algorithm::SimulatedAnnealingAlgorithm::localSearch(Solution& solution, const Problem& problem, int tabu_tenure) const {
+int SimulatedAnnealingAlgorithm::randomInt(int maxExclusive) const {
+    std::uniform_int_distribution<int> distribution(0, maxExclusive - 1);
+    return distribution(rng);
+}
+
+double SimulatedAnnealingAlgorithm::calculateCost(const std::vector<int>& assignment, const Problem& problem) const {
     const auto& warehouses = problem.getWarehouses();
     const auto& customers = problem.getCustomers();
-    std::unordered_set<int> tabu_list;
-    int iterations_without_improvement = 0;
+    std::vector<int> openCounts(warehouses.size(), 0);
+    double totalCost = 0.0;
 
-    while (iterations_without_improvement < 20) {
-        bool found_improvement = false;
-
-        for (int j = 0; j < customers.size(); ++j) {
-            int current_warehouse = solution.assignment[j];
-            double current_cost = customers[j].getAllocationCosts()[current_warehouse];
-            if (tabu_list.find(current_warehouse) == tabu_list.end()) {
-                current_cost += warehouses[current_warehouse].getFixedCost();
-            }
-
-            int best_warehouse = current_warehouse;
-            double best_cost = current_cost;
-
-            for (int i = 0; i < warehouses.size(); ++i) {
-                if (i != current_warehouse && tabu_list.find(i) == tabu_list.end()) {
-                    double new_cost = customers[j].getAllocationCosts()[i] + warehouses[i].getFixedCost();
-                    if (new_cost < best_cost) {
-                        best_warehouse = i;
-                        best_cost = new_cost;
-                        found_improvement = true;
-                    }
-                }
-            }
-
-            if (found_improvement) {
-                solution.assignment[j] = best_warehouse;
-                tabu_list.insert(best_warehouse);
-                if (tabu_list.size() > tabu_tenure) {
-                    tabu_list.erase(tabu_list.begin());
-                }
-                iterations_without_improvement = 0;
-            } else {
-                iterations_without_improvement++;
-            }
+    for (std::size_t customer = 0; customer < assignment.size(); ++customer) {
+        const int warehouse = assignment[customer];
+        if (warehouse < 0 || warehouse >= static_cast<int>(warehouses.size())) {
+            return kInfinity;
         }
 
-        if (!found_improvement) {
-            iterations_without_improvement++;
+        totalCost += customers[customer].getAllocationCosts()[static_cast<std::size_t>(warehouse)];
+        ++openCounts[static_cast<std::size_t>(warehouse)];
+    }
+
+    for (std::size_t warehouse = 0; warehouse < openCounts.size(); ++warehouse) {
+        if (openCounts[warehouse] > 0) {
+            totalCost += warehouses[warehouse].getFixedCost();
         }
+    }
+
+    return totalCost;
+}
+
+SimulatedAnnealingAlgorithm::Solution
+SimulatedAnnealingAlgorithm::generateNeighbor(const Solution& current_solution, const Problem& problem) const {
+    Solution newSolution = current_solution;
+    const int numCustomers = problem.getNumberOfCustomers();
+    const int numWarehouses = problem.getNumberOfWarehouses();
+    const int perturbations = std::max(1, std::min(numCustomers / 10, 25));
+
+    std::vector<int> customerOrder(static_cast<std::size_t>(numCustomers));
+    std::iota(customerOrder.begin(), customerOrder.end(), 0);
+    std::shuffle(customerOrder.begin(), customerOrder.end(), rng);
+
+    for (int i = 0; i < perturbations; ++i) {
+        newSolution.assignment[static_cast<std::size_t>(customerOrder[static_cast<std::size_t>(i)])] =
+            randomInt(numWarehouses);
+    }
+
+    localSearch(newSolution, problem, 6);
+    return newSolution;
+}
+
+void SimulatedAnnealingAlgorithm::localSearch(Solution& solution, const Problem& problem, int tabu_tenure) const {
+    const auto& warehouses = problem.getWarehouses();
+    const auto& customers = problem.getCustomers();
+    const int numWarehouses = problem.getNumberOfWarehouses();
+    std::vector<int> openCounts(warehouses.size(), 0);
+    std::vector<int> tabuUntil(warehouses.size(), 0);
+
+    for (const int warehouse : solution.assignment) {
+        ++openCounts[static_cast<std::size_t>(warehouse)];
     }
 
     solution.total_cost = calculateCost(solution.assignment, problem);
+
+    int iteration = 0;
+    int iterationsWithoutImprovement = 0;
+    while (iterationsWithoutImprovement < 20) {
+        bool improved = false;
+
+        for (std::size_t customer = 0; customer < solution.assignment.size(); ++customer) {
+            const int currentWarehouse = solution.assignment[customer];
+            int bestWarehouse = currentWarehouse;
+            double bestDelta = 0.0;
+
+            for (int warehouse = 0; warehouse < numWarehouses; ++warehouse) {
+                if (warehouse == currentWarehouse || tabuUntil[static_cast<std::size_t>(warehouse)] > iteration) {
+                    continue;
+                }
+
+                double delta = customers[customer].getAllocationCosts()[static_cast<std::size_t>(warehouse)] -
+                               customers[customer].getAllocationCosts()[static_cast<std::size_t>(currentWarehouse)];
+
+                if (openCounts[static_cast<std::size_t>(warehouse)] == 0) {
+                    delta += warehouses[static_cast<std::size_t>(warehouse)].getFixedCost();
+                }
+                if (openCounts[static_cast<std::size_t>(currentWarehouse)] == 1) {
+                    delta -= warehouses[static_cast<std::size_t>(currentWarehouse)].getFixedCost();
+                }
+
+                if (delta < bestDelta) {
+                    bestDelta = delta;
+                    bestWarehouse = warehouse;
+                }
+            }
+
+            if (bestWarehouse != currentWarehouse) {
+                --openCounts[static_cast<std::size_t>(currentWarehouse)];
+                ++openCounts[static_cast<std::size_t>(bestWarehouse)];
+                solution.assignment[customer] = bestWarehouse;
+                solution.total_cost += bestDelta;
+                tabuUntil[static_cast<std::size_t>(currentWarehouse)] = iteration + tabu_tenure;
+                improved = true;
+            }
+        }
+
+        if (improved) {
+            iterationsWithoutImprovement = 0;
+        } else {
+            ++iterationsWithoutImprovement;
+        }
+        ++iteration;
+    }
 }
 
-/**
- * Generates a new solution by adaptively perturbing a portion of the current solution based on the iteration number.
- */
-algorithm::SimulatedAnnealingAlgorithm::Solution algorithm::SimulatedAnnealingAlgorithm::adaptivePerturbation(const Solution& current_solution, const Problem& problem, int iteration) const {
-    RandomGenerator random;
-    Solution new_solution = current_solution;
+SimulatedAnnealingAlgorithm::Solution
+SimulatedAnnealingAlgorithm::adaptivePerturbation(const Solution& current_solution,
+                                                  const Problem& problem,
+                                                  int iteration) const {
+    Solution newSolution = current_solution;
+    const int numCustomers = problem.getNumberOfCustomers();
+    const int numWarehouses = problem.getNumberOfWarehouses();
+    const int perturbationSize = std::max(1, (iteration % 2 == 0) ? numCustomers / 3 : numCustomers / 5);
 
-    int num_customers = problem.getNumberOfCustomers();
-    int perturbation_size = (iteration % 2 == 0) ? num_customers / 3 : num_customers / 5;
+    std::vector<int> customerOrder(static_cast<std::size_t>(numCustomers));
+    std::iota(customerOrder.begin(), customerOrder.end(), 0);
+    std::shuffle(customerOrder.begin(), customerOrder.end(), rng);
 
-    std::unordered_set<int> perturbed_customers;
-    while (perturbed_customers.size() < perturbation_size) {
-        perturbed_customers.insert(random.getRandomInt(num_customers));
+    for (int i = 0; i < perturbationSize; ++i) {
+        newSolution.assignment[static_cast<std::size_t>(customerOrder[static_cast<std::size_t>(i)])] =
+            randomInt(numWarehouses);
     }
 
-    for (int client : perturbed_customers) {
-        new_solution.assignment[client] = random.getRandomInt(problem.getNumberOfWarehouses());
-    }
-
-    return new_solution;
+    newSolution.total_cost = calculateCost(newSolution.assignment, problem);
+    return newSolution;
 }
 
-/**
- * Solves the problem using the simulated annealing algorithm.
- */
-std::vector<std::pair<int, int>> algorithm::SimulatedAnnealingAlgorithm::solve(const Problem& problem) const {
-    RandomGenerator random;
-    int num_warehouses = problem.getNumberOfWarehouses();
-    int num_customers = problem.getNumberOfCustomers();
+std::vector<std::pair<int, int>> SimulatedAnnealingAlgorithm::solve(const Problem& problem) const {
+    const int numWarehouses = problem.getNumberOfWarehouses();
+    const int numCustomers = problem.getNumberOfCustomers();
 
-    Solution initial_solution;
-    initial_solution.assignment.resize(num_customers);
-    for (int j = 0; j < num_customers; ++j) {
-        initial_solution.assignment[j] = random.getRandomInt(num_warehouses);
+    if (numWarehouses <= 0 || numCustomers <= 0) {
+        return {};
     }
-    initial_solution.total_cost = calculateCost(initial_solution.assignment, problem);
 
-    Solution current_solution = initial_solution;
-    Solution best_solution = current_solution;
+    Solution currentSolution;
+    currentSolution.assignment = buildGreedyAssignment(problem);
+    currentSolution.total_cost = calculateCost(currentSolution.assignment, problem);
+    localSearch(currentSolution, problem, 6);
 
+    Solution bestSolution = currentSolution;
     double temperature = initial_temperature;
     int iteration = 0;
 
-    while (temperature > final_temperature) {
+    while (iterations_per_temp > 0 && cooling_rate > 0.0 && cooling_rate < 1.0 && temperature > final_temperature) {
         for (int i = 0; i < iterations_per_temp; ++i) {
-            Solution new_solution = generateNeighbor(current_solution, problem);
-            new_solution.total_cost = calculateCost(new_solution.assignment, problem);
-            localSearch(new_solution, problem, 6);
+            Solution newSolution = generateNeighbor(currentSolution, problem);
+            const double deltaCost = newSolution.total_cost - currentSolution.total_cost;
 
-            double delta_cost = new_solution.total_cost - current_solution.total_cost;
-
-            if (delta_cost < 0 || std::exp(-delta_cost / temperature) > random.getRandom()) {
-                current_solution = new_solution;
+            if (deltaCost < 0.0 || std::exp(-deltaCost / temperature) > randomUnit()) {
+                currentSolution = std::move(newSolution);
             }
 
-            if (current_solution.total_cost < best_solution.total_cost) {
-                best_solution = current_solution;
-                std::cout << "New Best solution found: " << best_solution.total_cost << std::endl;
+            if (currentSolution.total_cost < bestSolution.total_cost) {
+                bestSolution = currentSolution;
             }
         }
 
         temperature *= cooling_rate;
 
         if (++iteration % 30 == 0) {
-            current_solution = adaptivePerturbation(best_solution, problem, iteration);
-            current_solution.total_cost = calculateCost(current_solution.assignment, problem);
+            currentSolution = adaptivePerturbation(bestSolution, problem, iteration);
+            localSearch(currentSolution, problem, 6);
         }
     }
 
-    std::vector<std::pair<int, int>> result(num_customers);
-    for (int j = 0; j < num_customers; ++j) {
-        result[j] = std::make_pair(j, best_solution.assignment[j]);
+    std::vector<std::pair<int, int>> result;
+    result.reserve(static_cast<std::size_t>(numCustomers));
+
+    for (int customer = 0; customer < numCustomers; ++customer) {
+        result.emplace_back(customer, bestSolution.assignment[static_cast<std::size_t>(customer)]);
     }
 
     return result;
 }
+
+} // namespace algorithm

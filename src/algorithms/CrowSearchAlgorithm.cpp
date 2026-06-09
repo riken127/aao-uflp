@@ -1,147 +1,181 @@
-    #include "CrowSearchAlgorithm.hpp"
-    #include <random>
-    #include <algorithm>
-    #include <ctime>
-    #include <cmath>
-    #include <cfloat>
-    #include <vector>
-    #include <iostream>
+// Maintainer: riken127 <henriquenoronha05@gmail.com>
 
-    namespace algorithm {
+#include "CrowSearchAlgorithm.hpp"
 
-        std::default_random_engine generator(static_cast<unsigned>(std::time(nullptr)));
+#include <algorithm>
+#include <limits>
 
-        double CrowSearchAlgorithm::closed_interval_rand(double x0, double x1) {
-            std::uniform_real_distribution<double> distribution(x0, x1);
-            return distribution(generator);
+namespace algorithm {
+namespace {
+
+constexpr double kInfinity = std::numeric_limits<double>::infinity();
+
+void ensureOpenWarehouse(std::vector<bool>& solution, std::mt19937& rng) {
+    if (std::any_of(solution.begin(), solution.end(), [](bool open) { return open; })) {
+        return;
+    }
+
+    std::uniform_int_distribution<std::size_t> pick(0, solution.size() - 1);
+    solution[pick(rng)] = true;
+}
+
+std::vector<std::pair<int, int>> buildAssignments(const std::vector<std::vector<double>>& customer,
+                                                  const std::vector<bool>& openWarehouses) {
+    std::vector<std::pair<int, int>> assignments;
+    assignments.reserve(customer.size());
+
+    for (std::size_t customerIndex = 0; customerIndex < customer.size(); ++customerIndex) {
+        int warehouseIndex = -1;
+        double minCost = kInfinity;
+
+        for (std::size_t warehouse = 0; warehouse < openWarehouses.size(); ++warehouse) {
+            if (openWarehouses[warehouse] && customer[customerIndex][warehouse] < minCost) {
+                minCost = customer[customerIndex][warehouse];
+                warehouseIndex = static_cast<int>(warehouse);
+            }
         }
 
-        double CrowSearchAlgorithm::UFLP(int loc, int cus, const std::vector<std::vector<double>>& customer,
-            const std::vector<double>& location, const std::vector<bool>& per)
-        {
-            double cost = 0;
-            double min_cost = 0;
-            for (int i = 0; i < loc; ++i)
-                if (per[i])
-                    cost += location[i];
+        assignments.emplace_back(static_cast<int>(customerIndex), warehouseIndex);
+    }
 
-            for (int i = 0; i < cus; ++i) {
-                min_cost = DBL_MAX;
-                for (int j = 0; j < loc; ++j) {
-                    if (per[j] && customer[i][j] < min_cost)
-                        min_cost = customer[i][j];
-                }
-                cost += min_cost;
+    return assignments;
+}
+
+} // namespace
+
+double CrowSearchAlgorithm::closed_interval_rand(std::mt19937& rng, double x0, double x1) {
+    std::uniform_real_distribution<double> distribution(x0, x1);
+    return distribution(rng);
+}
+
+double CrowSearchAlgorithm::UFLP(int loc,
+                                 int cus,
+                                 const std::vector<std::vector<double>>& customer,
+                                 const std::vector<double>& location,
+                                 const std::vector<bool>& per) {
+    double cost = 0.0;
+    bool hasOpenWarehouse = false;
+
+    for (int warehouse = 0; warehouse < loc; ++warehouse) {
+        if (per[static_cast<std::size_t>(warehouse)]) {
+            cost += location[static_cast<std::size_t>(warehouse)];
+            hasOpenWarehouse = true;
+        }
+    }
+
+    if (!hasOpenWarehouse) {
+        return kInfinity;
+    }
+
+    for (int customerIndex = 0; customerIndex < cus; ++customerIndex) {
+        double minCost = kInfinity;
+        for (int warehouse = 0; warehouse < loc; ++warehouse) {
+            if (per[static_cast<std::size_t>(warehouse)] &&
+                customer[static_cast<std::size_t>(customerIndex)][static_cast<std::size_t>(warehouse)] < minCost) {
+                minCost = customer[static_cast<std::size_t>(customerIndex)][static_cast<std::size_t>(warehouse)];
             }
+        }
+        cost += minCost;
+    }
 
-            return cost;
+    return cost;
+}
+
+std::vector<std::pair<int, int>> CrowSearchAlgorithm::solve(const Problem& problem) const {
+    const int loc = problem.getNumberOfWarehouses();
+    const int cus = problem.getNumberOfCustomers();
+
+    if (loc <= 0 || cus <= 0 || population_size <= 0) {
+        return {};
+    }
+
+    std::mt19937 rng(std::random_device{}());
+
+    const auto& customers = problem.getCustomers();
+    const auto& warehouses = problem.getWarehouses();
+
+    std::vector<double> location(static_cast<std::size_t>(loc));
+    std::vector<std::vector<double>> customer(static_cast<std::size_t>(cus), std::vector<double>(static_cast<std::size_t>(loc)));
+
+    for (int warehouse = 0; warehouse < loc; ++warehouse) {
+        location[static_cast<std::size_t>(warehouse)] = warehouses[static_cast<std::size_t>(warehouse)].getFixedCost();
+    }
+
+    for (int customerIndex = 0; customerIndex < cus; ++customerIndex) {
+        customer[static_cast<std::size_t>(customerIndex)] =
+            customers[static_cast<std::size_t>(customerIndex)].getAllocationCosts();
+    }
+
+    const int populationSize = population_size;
+    const double awarenessProbability = awareness_probability;
+    const int maxIterations = std::max(1, function_evaluations / populationSize);
+
+    std::vector<int> follow(static_cast<std::size_t>(populationSize), 0);
+    std::vector<double> objCrows(static_cast<std::size_t>(populationSize), 0.0);
+    std::vector<double> objMemory(static_cast<std::size_t>(populationSize), 0.0);
+
+    std::vector<std::vector<bool>> xCrows(static_cast<std::size_t>(populationSize), std::vector<bool>(static_cast<std::size_t>(loc)));
+    std::vector<std::vector<bool>> xMemory(static_cast<std::size_t>(populationSize), std::vector<bool>(static_cast<std::size_t>(loc)));
+
+    double globalBest = kInfinity;
+    std::vector<bool> globalBestMemory(static_cast<std::size_t>(loc), false);
+
+    for (int crow = 0; crow < populationSize; ++crow) {
+        for (int warehouse = 0; warehouse < loc; ++warehouse) {
+            xCrows[static_cast<std::size_t>(crow)][static_cast<std::size_t>(warehouse)] =
+                closed_interval_rand(rng, 0.0, 1.0) < 0.5;
         }
 
-        std::vector<std::pair<int, int>> CrowSearchAlgorithm::solve(const Problem& problem) const {
-            int loc = problem.getNumberOfWarehouses();
-            int cus = problem.getNumberOfCustomers();
+        ensureOpenWarehouse(xCrows[static_cast<std::size_t>(crow)], rng);
+        xMemory[static_cast<std::size_t>(crow)] = xCrows[static_cast<std::size_t>(crow)];
+        objMemory[static_cast<std::size_t>(crow)] =
+            UFLP(loc, cus, customer, location, xMemory[static_cast<std::size_t>(crow)]);
+    }
 
-            const auto& customers = problem.getCustomers();
-            const auto& warehouses = problem.getWarehouses();
+    std::uniform_int_distribution<int> followDistribution(0, populationSize - 1);
 
-            std::vector<double> location(loc);
-            std::vector<std::vector<double>> customer(cus, std::vector<double>(loc));
+    for (int iter = 0; iter < maxIterations; ++iter) {
+        for (int crow = 0; crow < populationSize; ++crow) {
+            const auto crowIndex = static_cast<std::size_t>(crow);
+            objCrows[crowIndex] = UFLP(loc, cus, customer, location, xCrows[crowIndex]);
 
-            for (int i = 0; i < loc; ++i)
-                location[i] = warehouses[i].getFixedCost();
-
-            for (int i = 0; i < cus; ++i) {
-                const std::vector<double>& costs = customers[i].getAllocationCosts();
-                for (int j = 0; j < loc; ++j) {
-                    customer[i][j] = costs[j];
-                }
+            if (objCrows[crowIndex] < objMemory[crowIndex]) {
+                objMemory[crowIndex] = objCrows[crowIndex];
+                xMemory[crowIndex] = xCrows[crowIndex];
             }
 
-            const int N = population_size;  // Population size
-            const double AP = awareness_probability;  // Awareness probability
-            const int MAX_ITER = function_evaluations / N;  // Number of iterations
-
-            std::vector<bool> x(loc);
-            std::vector<int> follow(N);
-
-            std::vector<double> obj_crows(N, 0);
-            std::vector<double> obj_memory(N, 0);
-
-            std::vector<std::vector<bool>> x_crows(N, std::vector<bool>(loc));
-            std::vector<std::vector<bool>> x_memory(N, std::vector<bool>(loc));
-
-            double global_best = DBL_MAX;
-
-            std::vector<std::pair<int, int>> final_assignments;
-
-            // Memory initialization with more strategic approach
-            for (int i = 0; i < N; i++) {
-                for (int j = 0; j < loc; j++) {
-                    if (closed_interval_rand(0, 1) < 0.5) {
-                        x_crows[i][j] = false;
-                        x_memory[i][j] = false;
-                        continue;
-                    }
-                    x_crows[i][j] = true;
-                    x_memory[i][j] = true;
-                }
+            if (objMemory[crowIndex] < globalBest) {
+                globalBest = objMemory[crowIndex];
+                globalBestMemory = xMemory[crowIndex];
             }
-
-            for (int i = 0; i < N; i++) {
-                obj_memory[i] = UFLP(loc, cus, customer, location, x_crows[i]);
-            }
-
-            // Iterations start
-            for (int iter = 0; iter < MAX_ITER; iter++) {
-                for (int i = 0; i < N; i++) {
-                    obj_crows[i] = UFLP(loc, cus, customer, location, x_crows[i]);
-
-                    if (obj_crows[i] < obj_memory[i]) {
-                        obj_memory[i] = obj_crows[i];
-
-                        for (int j = 0; j < loc; j++) {
-                            x_memory[i][j] = x_crows[i][j];
-                        }
-                    }
-
-                    if (obj_memory[i] < global_best) {
-                        global_best = obj_memory[i];
-                        final_assignments.clear();
-
-                        // Update final_assignments with the new best assignments
-                        for (int k = 0; k < cus; ++k) {
-                            int warehouse_index = -1;
-                            double min_cost = DBL_MAX;
-                            for (int j = 0; j < loc; ++j) {
-                                if (x_memory[i][j] && customer[k][j] < min_cost) {
-                                    min_cost = customer[k][j];
-                                    warehouse_index = j;
-                                }
-                            }
-                            final_assignments.emplace_back(k, warehouse_index);
-                        }
-                    }
-                }
-
-                for (int i = 0; i < N; ++i) {
-                    follow[i] = std::ceil(N * closed_interval_rand(0, 1)) - 1;
-                }
-
-                for (int i = 0; i < N; ++i) {
-                    if (closed_interval_rand(0, 1) > AP) {
-                        for (int j = 0; j < loc; ++j) {
-                            x_crows[i][j] = x_memory[i][j] ^ ((std::rand() & 1) & (x_memory[follow[i]][j] ^ x_memory[i][j]));
-                        }
-                    }
-                    else {
-                        for (int j = 0; j < loc; ++j) {
-                            x_crows[i][j] = closed_interval_rand(0, 1) < 0.5;
-                        }
-                    }
-                }
-            }
-
-            return final_assignments;
         }
 
-    } // namespace algorithm
+        for (int crow = 0; crow < populationSize; ++crow) {
+            follow[static_cast<std::size_t>(crow)] = followDistribution(rng);
+        }
+
+        for (int crow = 0; crow < populationSize; ++crow) {
+            const auto crowIndex = static_cast<std::size_t>(crow);
+            if (closed_interval_rand(rng, 0.0, 1.0) > awarenessProbability) {
+                const auto followIndex = static_cast<std::size_t>(follow[crowIndex]);
+                for (int warehouse = 0; warehouse < loc; ++warehouse) {
+                    const auto warehouseIndex = static_cast<std::size_t>(warehouse);
+                    const bool memoryDiff = xMemory[followIndex][warehouseIndex] != xMemory[crowIndex][warehouseIndex];
+                    const bool randomStep = closed_interval_rand(rng, 0.0, 1.0) < 0.5;
+                    xCrows[crowIndex][warehouseIndex] = xMemory[crowIndex][warehouseIndex] != (randomStep && memoryDiff);
+                }
+            } else {
+                for (int warehouse = 0; warehouse < loc; ++warehouse) {
+                    xCrows[crowIndex][static_cast<std::size_t>(warehouse)] =
+                        closed_interval_rand(rng, 0.0, 1.0) < 0.5;
+                }
+            }
+
+            ensureOpenWarehouse(xCrows[crowIndex], rng);
+        }
+    }
+
+    return buildAssignments(customer, globalBestMemory);
+}
+
+} // namespace algorithm

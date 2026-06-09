@@ -1,9 +1,13 @@
+// Maintainer: riken127 <henriquenoronha05@gmail.com>
+
 #include "MParser.hpp"
 #include "../problem/Problem.hpp"
+
 #include <fstream>
 #include <sstream>
-#include <vector>
 #include <stdexcept>
+#include <utility>
+#include <vector>
 
 Problem miscellaneous::MParser::parse(const std::string& path) const {
     std::ifstream file(path);
@@ -23,6 +27,8 @@ Problem miscellaneous::MParser::parse(const std::string& path) const {
         throw std::runtime_error("Error parsing the number of warehouses and customers");
     }
 
+    problem.reserveStorage();
+
     // Read warehouses
     for (int i = 0; i < problem.num_warehouses; ++i) {
         int capacity;
@@ -34,7 +40,7 @@ Problem miscellaneous::MParser::parse(const std::string& path) const {
         if (!(iss >> capacity >> fixed_cost)) {
             throw std::runtime_error("Error parsing warehouse data");
         }
-        problem.warehouses.emplace_back(capacity, fixed_cost);
+        problem.addWarehouse(Warehouse{capacity, fixed_cost});
     }
 
     // Read customer data
@@ -67,7 +73,7 @@ Problem miscellaneous::MParser::parse(const std::string& path) const {
             throw std::runtime_error("Mismatch in the number of allocation costs");
         }
 
-        problem.customers.emplace_back(demand, allocation_costs);
+        problem.addCustomer(Customer{demand, std::move(allocation_costs)});
     }
 
     return problem;

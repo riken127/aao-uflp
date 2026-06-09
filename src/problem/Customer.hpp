@@ -1,4 +1,8 @@
 #pragma once
+
+// Maintainer: riken127 <henriquenoronha05@gmail.com>
+
+#include <utility>
 #include <vector>
 
 /**
@@ -10,7 +14,7 @@ private:
     std::vector<double> allocation_costs;
 
 public:
-    Customer(int dem, const std::vector<double>& costs) : demand(dem), allocation_costs(costs) {}
+    Customer(int dem, std::vector<double> costs) : demand(dem), allocation_costs(std::move(costs)) {}
 
     int getDemand() const {
         return demand;
